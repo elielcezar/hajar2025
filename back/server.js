@@ -2,16 +2,59 @@ import express from 'express';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client'
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Configuração do multer para armazenar arquivos localmente
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, 'uploads');
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath);
+        }
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
+const upload = multer({ storage });
+
 /* POST - CREATE --------------------------------------*/
-app.post('/usuarios', async (req, res) => {    
+app.post('/usuarios', upload.array('photos'), async (req, res) => {
     console.log('Recebendo requisição POST /usuarios');
-    await prisma.user.create({
+    
+    const { name, email, password } = req.body;
+    const photos = req.files;
+
+    try {
+        console.log('Dados recebidos:', { name, email, password, photos });
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const response = await prisma.user.create({
+            data: {
+                email,
+                name,
+                password: hashedPassword,
+                createdAt: new Date(),
+                photos: photos.map(file => file.path) // Armazena os caminhos dos arquivos
+            }
+        });
+        console.log('Usuário criado:', response);
+        res.status(201).json(response);
+    } catch (error) {
+        console.error('Erro ao criar usuário:', error);
+        res.status(500).json({ error: 'Erro ao criar usuário' });
+    }
+
+    /*await prisma.user.create({
         data: {
             email: req.body.email,
             name: req.body.name,            
@@ -22,7 +65,7 @@ app.post('/usuarios', async (req, res) => {
     }).catch((error) => {
         console.log(error);
     });
-    res.status(201).json(req.body);
+    res.status(201).json(req.body);*/
 });
 
 /* GET - READ ----------------------------------------*/
