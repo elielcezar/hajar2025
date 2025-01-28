@@ -24,8 +24,10 @@ function Header() {
                 <ul>
                     <li><NavLink to="/" end>Home</NavLink></li>
                     <li><NavLink to="about">Sobre</NavLink></li>
-                    <li><NavLink to="imoveis/imovel-1">Imovel 1</NavLink></li>
-                    <li><NavLink to="imoveis/imovel-2">Imovel 2</NavLink></li>
+                    <li><NavLink to="imoveis/6798e97c5baa134c63f88f93">Imovel 1</NavLink></li>
+                    {isAuthenticated ? (
+                        <li><NavLink to="cadastro">Cadastro</NavLink></li>
+                    ) : null}
                     <li><NavLink to="contact">Contato</NavLink></li>                    
                 </ul>
             </nav>

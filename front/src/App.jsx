@@ -9,6 +9,7 @@ import NotFound from './pages/notfound';
 import ProtectedRoute from './components/ProtectedRoute';
 import Contact from './pages/contact';
 import Imovel from './pages/imovel';
+import Cadastro from './pages/cadastro';
 import Footer from './components/footer';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
                     <Route path="login" element={<Login />} />
                     <Route path="/" element={<ProtectedRoute element={Home} />} />
                     <Route path="imoveis/:id" element={<Imovel />} />
+                    <Route path="cadastro" element={<Cadastro />} />
                     <Route path="about" element={<About />} />
                     <Route path="contact" element={<Contact />} />                    
                     <Route path="*" element={<NotFound />} />                    
