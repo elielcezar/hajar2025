@@ -1,10 +1,19 @@
 import express from 'express';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import dotenv from 'dotenv';
+
+// Carregar variáveis de ambiente do arquivo .env
+dotenv.config();
+
+// Definir __dirname manualmente
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const prisma = new PrismaClient();
 const app = express();
@@ -14,11 +23,7 @@ app.use(cors());
 // Configuração do multer para armazenar arquivos localmente
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = path.join(__dirname, 'uploads');
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath);
-        }
-        cb(null, uploadPath);
+        cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -27,12 +32,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+
 /* POST - CREATE --------------------------------------*/
 app.post('/usuarios', upload.array('photos'), async (req, res) => {
     console.log('Recebendo requisição POST /usuarios');
     
     const { name, email, password } = req.body;
-    const photos = req.files;
+    const photos = req.files.map(file => file.filename);
 
     try {
         console.log('Dados recebidos:', { name, email, password, photos });
@@ -44,7 +50,7 @@ app.post('/usuarios', upload.array('photos'), async (req, res) => {
                 name,
                 password: hashedPassword,
                 createdAt: new Date(),
-                photos: photos.map(file => file.path) // Armazena os caminhos dos arquivos
+                photos: photos
             }
         });
         console.log('Usuário criado:', response);
@@ -53,19 +59,6 @@ app.post('/usuarios', upload.array('photos'), async (req, res) => {
         console.error('Erro ao criar usuário:', error);
         res.status(500).json({ error: 'Erro ao criar usuário' });
     }
-
-    /*await prisma.user.create({
-        data: {
-            email: req.body.email,
-            name: req.body.name,            
-            password: req.body.password
-        }
-    }).then((response) => {
-        console.log(response);
-    }).catch((error) => {
-        console.log(error);
-    });
-    res.status(201).json(req.body);*/
 });
 
 /* GET - READ ----------------------------------------*/
