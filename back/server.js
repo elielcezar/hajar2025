@@ -32,6 +32,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+app.use('/uploads', express.static('uploads'));
+
 
 /* POST - CREATE --------------------------------------*/
 app.post('/usuarios', upload.array('photos'), async (req, res) => {
@@ -58,6 +60,30 @@ app.post('/usuarios', upload.array('photos'), async (req, res) => {
     } catch (error) {
         console.error('Erro ao criar usuário:', error);
         res.status(500).json({ error: 'Erro ao criar usuário' });
+    }
+});
+
+/* GET - READ ONE -------------------------------------*/
+app.get('/usuarios/:id', async (req, res) => {
+    try{
+        const {id} = req.params;
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id: id
+            }
+        });
+        if(!user){
+            return res.status(404).json({
+                error: 'Usuário não encontrado'
+            })
+        }
+        res.json(user);
+    }catch(error){
+        console.error('Erro ao buscar usuário:', error);
+        res.status(500).json({
+            error: 'Erro ao buscar usuário'
+        });
     }
 });
 

@@ -34,8 +34,8 @@ function Imovel() {
 
       <h1>Detalhes do Usuário</h1>
       <p>ID: {user.id}</p>
-      <p>ID: {user.name}</p>
-      <p>ID: {user.email}</p>
+      <p>Nome: {user.name}</p>
+      <p>Email: {user.email}</p>
       <ul>
         {Array.isArray(user.photos) && user.photos.map((photo, index) => (
           <li key={index}>
