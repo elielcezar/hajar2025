@@ -57,7 +57,7 @@ function Home() {
                 }
             });
 
-            if (response.status === 200) {
+            if (response.status === 200 || response.status === 201) {
                 getUsers();
 
                 inputName.current.value = '';
@@ -109,8 +109,7 @@ function Home() {
         <div className='listaUsuarios'>
             {users.map((user) => (                
                 <div className="item" key={user.id}>
-                    <p>Nome: {user.name}</p>
-                    <p>Idade: {user.age}</p>
+                    <p>Nome: {user.name}</p>                    
                     <p>Email: {user.email}</p>
                     <button onClick={() => deleteUser(user.id)}>Excluir</button>
                 </div>                
