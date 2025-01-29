@@ -21,3 +21,20 @@ model User {
   createdAt DateTime? @default(now())
   photos    String[]
 }
+
+model Imovel {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  titulo          String
+  subTitulo       String?
+  descricaoCurta  String?
+  descricaoLonga  String?
+  fotos           String[]  
+  tipo            String?
+  finalidade      String?
+  cidade          String?
+  valor           String?
+  codigo          String?
+  endereco        String?  
+  createdAt       DateTime? @default(now())
+  //owner       User     @relation(fields: [ownerId], references: [id])
+}

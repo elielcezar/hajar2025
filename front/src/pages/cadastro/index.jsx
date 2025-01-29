@@ -68,6 +68,7 @@ function Home() {
    
   return (
     <>
+    <h1>Cadastrar novo usuário</h1>
       <div className="container">        
         {confirmationMessage ? <p className="confirmation-message">{confirmationMessage}</p> : null}
 

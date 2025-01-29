@@ -32,10 +32,55 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// Rota para servir arquivos estáticos
 app.use('/uploads', express.static('uploads'));
 
+/* POST CREATE IMOVEL --------------------------------------*/
+app.post('/imoveis', upload.array('fotos'), async (req, res) => {
+    console.log('Recebendo requisição POST /imoveis');
+    
+    const { 
+        titulo, 
+        codigo, 
+        subtitulo, 
+        descricaoCurta, 
+        descricaoLonga,
+        tipo,
+        finalidade,
+        valor,
+        endereco,
+        cidade
+    } = req.body;
+    const fotos = req.files.map(file => file.filename);
 
-/* POST - CREATE --------------------------------------*/
+    try {
+        console.log('Dados recebidos:', {titulo, codigo, subtitulo, descricaoCurta, descricaoLonga, tipo, finalidade, valor, endereco, cidade, fotos});        
+        
+        const response = await prisma.imovel.create({
+            data: {
+                titulo, 
+                codigo, 
+                subtitulo, 
+                descricaoCurta, 
+                descricaoLonga,
+                tipo,
+                finalidade,
+                valor,
+                endereco,
+                cidade,                
+                createdAt: new Date(),
+                fotos: fotos
+            }
+        });
+        console.log('Imóvel criado:', response);
+        res.status(201).json(response);
+    } catch (error) {
+        console.error('Erro ao criar imóvel:', error);
+        res.status(500).json({ error: 'Erro ao criar imóvel' });
+    }
+})
+
+/* POST - CREATE USER --------------------------------------*/
 app.post('/usuarios', upload.array('photos'), async (req, res) => {
     console.log('Recebendo requisição POST /usuarios');
     
@@ -64,6 +109,30 @@ app.post('/usuarios', upload.array('photos'), async (req, res) => {
 });
 
 /* GET - READ ONE -------------------------------------*/
+app.get('/imoveis/:id', async (req, res) => {
+    try{
+        const {id} = req.params;
+
+        const imovel = await prisma.imovel.findUnique({
+            where: {
+                id: id
+            }
+        });
+        if(!imovel){
+            return res.status(404).json({
+                error: 'Imóvel não encontrado'
+            })
+        }
+        res.json(user);
+    }catch(error){
+        console.error('Erro ao buscar imóvel:', error);
+        res.status(500).json({
+            error: 'Erro ao buscar imóvel'
+        });
+    }
+});
+
+/* GET - READ ONE -------------------------------------*/
 app.get('/usuarios/:id', async (req, res) => {
     try{
         const {id} = req.params;
@@ -85,6 +154,36 @@ app.get('/usuarios/:id', async (req, res) => {
             error: 'Erro ao buscar usuário'
         });
     }
+});
+
+/* GET - READ ----------------------------------------*/
+app.get('/imoveis', async (req, res) => {
+
+    console.log('Recebendo requisição GET /imoveis');
+
+    let imoveis = [];   
+
+    if(req.query){
+        imoveis = await prisma.imovel.findMany({
+            where:{
+                titulo: req.query.titulo,
+                codigo: req.query.codigo,
+                subtitulo: req.query.subtitulo,
+                descricaoCurta: req.query.descricaoCurta,
+                descricaoLonga: req.query.descricaoLonga,
+                tipo: req.query.tipo,
+                finalidade: req.query.finalidade,
+                valor: req.query.valor,
+                endereco: req.query.endereco,
+                cidade: req.query.cidade
+            }
+        })
+    }else{
+        imoveis = await prisma.imovel.findMany();
+    }
+    console.log('Imóveis encontrados:', imoveis);
+    res.status(200).json(imoveis);
+
 });
 
 /* GET - READ ----------------------------------------*/

@@ -11,6 +11,7 @@ import Contact from './pages/contact';
 import Imovel from './pages/imovel';
 import Cadastro from './pages/cadastro';
 import Footer from './components/footer';
+import CadastroImovel from './pages/cadastroimovel';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                     <Route path="/" element={<ProtectedRoute element={Home} />} />
                     <Route path="imoveis/:id" element={<Imovel />} />
                     <Route path="cadastro" element={<Cadastro />} />
+                    <Route path="cadastro-imovel" element={<CadastroImovel />} />
                     <Route path="about" element={<About />} />
                     <Route path="contact" element={<Contact />} />                    
                     <Route path="*" element={<NotFound />} />                    
