@@ -32,7 +32,8 @@ function Header() {
                         <li><NavLink to="cadastro">Novo Usuário</NavLink></li>
                         </>
                     ) : null}                    
-                    <li><NavLink to="contact">Contato</NavLink></li>                    
+                    <li><NavLink to="contact">Contato</NavLink></li>
+                    <li><NavLink to="login">Login</NavLink></li> 
                 </ul>
             </nav>
 

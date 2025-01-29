@@ -4,36 +4,41 @@ import api from '../../services/api'
 
 function Home() { 
 
-  const [users, setUsers] = useState([]);
-  
-  async function getUsers() { 
-      const usersFromApi = await api.get('/usuarios');
-      setUsers(usersFromApi.data.reverse());          
-  }
+  const [imoveis, setImoveis] = useState([]);
 
-  useEffect(() => {  
-      getUsers();
-  }, []);    
+  async function getImoveis(){
+      const imoveisFromAPI = await api.get('/imoveis')
+      setImoveis(imoveisFromAPI.data.reverse());
+      console.log('Imoveis:', imoveis)
+  } 
 
-  async function deleteUser(id) {         
-      await api.delete(`/usuarios/${id}`);  
-      getUsers();      
-  }
+  useEffect(() => {
+    getImoveis();
+  }, [])
 
-  const baseUrl = '/imoveis/'; 
+  const baseUrl = 'http://localhost:3000/uploads/'
   
   return (
     <>
       <div className="container">  
 
-        <div className='listaUsuarios'>
-            {users.map((user) => (                
-                <div className="item" key={user.id}>
-                    <p><a href={`${baseUrl}${user.id}`}>{user.name}</a></p>
-                    <p>Email: {user.email}</p>
-
-                    <button onClick={() => deleteUser(user.id)}>Excluir</button>
-                </div>                
+      <div id="imoveis">
+            {imoveis.map((imovel) => (
+                <div className="item" key={imovel.id}>
+                    <div className="card">
+                        <div className="capa">
+                            <a href={`/imoveis/${imovel.codigo}`}>
+                                <img src={`${baseUrl}${imovel.fotos[0]}`} alt="" />
+                            </a>                 
+                            <p className="finalidade">{imovel.finalidade}</p>
+                            <p className="valor">{imovel.valor}</p>
+                        </div>
+                        <div className="content">
+                            <h3>{imovel.titulo}</h3>
+                            <p className="subtitulo">{imovel.subtitulo}</p>                        
+                        </div>
+                    </div>                
+                </div>
             ))}
         </div>
         
