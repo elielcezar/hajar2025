@@ -8,33 +8,21 @@ function CadastroUsuario() {
  
     const inputName = useRef();    
     const inputEmail = useRef();
-    const inputPassword = useRef();
-    const inputPhotos = useRef();
+    const inputPassword = useRef();    
 
     async function createUser() {
-        
-        const formData = new FormData();
+
         const userData = {
             name: inputName.current.value,
             email: inputEmail.current.value,
-            password: inputPassword.current.value,
-            photos: []
-        };
-
-        formData.append('name', userData.name);
-        formData.append('email', userData.email);
-        formData.append('password', userData.password);
-
-        // Adiciona múltiplas fotos ao FormData e ao objeto userData para log
-        Array.from(inputPhotos.current.files).forEach((file, index) => {
-            formData.append('photos', file);
-            userData.photos.push(file.name);
-        });
+            password: inputPassword.current.value
+        };        
+        console.log(userData);    
 
         try {
-            const response = await api.post('/usuarios', formData, {
+            const response = await api.post('/usuarios', userData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                 }
             });
 
@@ -42,8 +30,7 @@ function CadastroUsuario() {
 
                 inputName.current.value = '';
                 inputEmail.current.value = '';
-                inputPassword.current.value = '';
-                inputPhotos.current.value = '';
+                inputPassword.current.value = '';                
 
                 setConfirmationMessage('Usuário cadastrado com sucesso!');
                 setTimeout(() => setConfirmationMessage(''), 5000);
@@ -73,10 +60,7 @@ function CadastroUsuario() {
             </div>
             <div className="form-item">
                 <input type="password" name="password" className="password" placeholder='Senha' ref={inputPassword} />
-            </div>
-            <div className="form-item">
-                <input type="file" name="photos" className="photos" ref={inputPhotos} multiple />
-            </div>
+            </div>            
             <div className="form-item">
                 <button type='button' onClick={createUser}>- Enviar -</button>
             </div>

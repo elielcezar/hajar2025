@@ -19,14 +19,13 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Criar usuario
-router.post('/usuarios', upload.array('photos'), async (req, res) => {
+router.post('/usuarios', async (req, res) => {
     
     console.log('Recebendo requisição POST /usuarios');    
-    const { name, email, password } = req.body;
-    const photos = req.files.map(file => file.filename);
+    const { name, email, password } = req.body;    
 
     try {
-        console.log('Dados recebidos:', { name, email, password, photos });
+        console.log('Dados recebidos:', { name, email, password });
         
         const hashedPassword = await bcrypt.hash(password, 10);
         const response = await prisma.user.create({
@@ -34,8 +33,7 @@ router.post('/usuarios', upload.array('photos'), async (req, res) => {
                 email,
                 name,
                 password: hashedPassword,
-                createdAt: new Date(),
-                photos: photos
+                createdAt: new Date()               
             }
         });
         console.log('Usuário criado:', response);
@@ -94,21 +92,28 @@ router.get('/usuarios/:id', async (req, res) => {
 
 // Atualizar usuario
 router.put('/usuarios/:id', async (req, res) => {    
-    await prisma.user.update({
-        where: {
-            id: req.params.id
-        },
-        data: {
-            email: req.body.email,
-            name: req.body.name,            
-            password: req.body.password
-        }
-    }).then((response) => {
-        console.log(response);
-    }).catch((error) => {
-        console.log(error);
-    });
-    res.status(200).json(req.body);
+
+    try{
+        console.log('Recebendo requisição PUT /usuarios');    
+
+        const { name, email, password } = req.body;   
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const response = await prisma.user.update({
+            where: {
+                id: req.params.id
+            },
+            data: {
+                email,
+                name,
+                password: hashedPassword,
+            }
+        });
+        console.log('Usuário atualizado:', response);
+        res.status(200).json(req.body);
+    }catch{
+        console.error('Erro ao atualizar usuário:', error);
+        res.status(500).json({ error: 'Erro ao atualizar usuário' });
+    }
 });
 
 // Excluir usuario

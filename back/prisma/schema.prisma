@@ -18,8 +18,7 @@ model User {
   email     String   @unique
   name      String  
   password  String?  
-  createdAt DateTime? @default(now())
-  photos    String[]
+  createdAt DateTime? @default(now())  
 }
 
 model Imovel {
