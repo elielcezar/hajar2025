@@ -33,39 +33,21 @@ function CadastroImovel() {
         }
         
         const formData = new FormData();
-        const userData = {
-            titulo: inputTitulo.current.value,
-            codigo: inputCodigo.current.value,
-            subTitulo: inputSubTitulo.current.value,
-            descricaoCurta: inputDescricaoCurta.current.value,
-            descricaoLonga: inputDescricaoLonga.current.value,
-            fotos: [],
-            tipo: inputTipo.current.value,
-            finalidade: inputFinalidade.current.value,
-            valor: inputValor.current.value,
-            endereco: inputEndereco.current.value,
-            cidade: inputCidade.current.value            
-        };
-
-        formData.append('titulo', userData.titulo);
-        formData.append('codigo', userData.codigo);
-        formData.append('subTitulo', userData.subTitulo);
-        formData.append('descricaoCurta', userData.descricaoCurta);
-        formData.append('descricaoLonga', userData.descricaoLonga);
-        formData.append('tipo', userData.tipo);
-        formData.append('finalidade', userData.finalidade);
-        formData.append('valor', userData.valor);
-        formData.append('endereco', userData.endereco);
-        formData.append('cidade', userData.cidade);                
+            formData.append('titulo', inputTitulo.current.value);
+            formData.append('codigo', inputCodigo.current.value);
+            formData.append('subTitulo', inputSubTitulo.current.value);
+            formData.append('descricaoCurta', inputDescricaoCurta.current.value);
+            formData.append('descricaoLonga', inputDescricaoLonga.current.value);
+            formData.append('tipo', inputTipo.current.value);
+            formData.append('finalidade', inputFinalidade.current.value);
+            formData.append('valor', inputValor.current.value);
+            formData.append('endereco', inputEndereco.current.value);
+            formData.append('cidade', inputCidade.current.value);               
 
         // Adiciona múltiplas fotos ao FormData e ao objeto userData para log
         Array.from(inputFotos.current.files).forEach((file, index) => {
-            formData.append('fotos', file);
-            userData.fotos.push(file.name);
+            formData.append('fotos', file);            
         });
-
-        // Loga o objeto userData no console
-        console.log('Dados do usuário:', JSON.stringify(userData, null, 2));
 
         // Loga o conteúdo do FormData no console
         for (let [key, value] of formData.entries()) {
@@ -97,6 +79,7 @@ function CadastroImovel() {
 
                 setConfirmationMessage('Imóvel cadastrado com sucesso!');
                 setTimeout(() => setConfirmationMessage(''), 5000);
+                
             } else {
                 throw new Error('Erro ao cadastrar imóvel');
             }
