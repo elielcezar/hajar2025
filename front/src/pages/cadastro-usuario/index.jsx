@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import './style.css'
 import api from '../../services/api'
 
-function Home() { 
+function CadastroUsuario() { 
     
     const [confirmationMessage, setConfirmationMessage] = useState('');  
  
@@ -30,14 +30,6 @@ function Home() {
             formData.append('photos', file);
             userData.photos.push(file.name);
         });
-
-        // Loga o objeto userData no console
-        //console.log('Dados do usuário:', JSON.stringify(userData, null, 2));
-
-        // Loga o conteúdo do FormData no console
-        /*for (let [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-        }*/
 
         try {
             const response = await api.post('/usuarios', formData, {
@@ -95,4 +87,4 @@ function Home() {
   )
 }
 
-export default Home
+export default CadastroUsuario

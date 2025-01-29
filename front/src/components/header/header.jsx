@@ -24,13 +24,14 @@ function Header() {
                 <ul>
                     <li><NavLink to="/" end>Home</NavLink></li>
                     <li><NavLink to="about">Sobre</NavLink></li>
-                    <li><NavLink to="imoveis/6798e97c5baa134c63f88f93">Imovel 1</NavLink></li>
+                    <li><NavLink to="imoveis">Imoveis</NavLink></li>                    
                     {isAuthenticated ? (
+                        <>
+                        <li><NavLink to="usuarios">Usuários</NavLink></li>
                         <li><NavLink to="cadastro-imovel">Novo Imóvel</NavLink></li>                        
-                    ) : null}
-                    {isAuthenticated ? (                        
                         <li><NavLink to="cadastro">Novo Usuário</NavLink></li>
-                    ) : null}
+                        </>
+                    ) : null}                    
                     <li><NavLink to="contact">Contato</NavLink></li>                    
                 </ul>
             </nav>

@@ -13,11 +13,15 @@ body{
 }
 
 .container{    
-    max-width: 700px;
+    max-width: 1300px;
     margin: 0 auto;  
     height: 100vh;
     display: flex;
     flex-direction: column;    
+}
+
+img{
+  max-width: 100%;
 }
 
 @media(orientation:portrait){
@@ -74,7 +78,8 @@ table{
 }
 
 form{
-  & input{
+  & input,
+  & textarea{
     width: 100%;
     max-width: 100%;
     padding: 15px;
@@ -82,7 +87,12 @@ form{
     border-radius: 7px; 
     margin-bottom: 20px; 
     font-size: 18px;
-  }  
+    font-family: "Montserrat", serif;
+  } 
+  
+  & textarea{
+    min-height: 200px;
+  }
 }
 
 

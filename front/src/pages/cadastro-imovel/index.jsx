@@ -23,10 +23,13 @@ function CadastroImovel() {
         event.preventDefault();
 
         // Verificar se todos os campos obrigatórios estão preenchidos
-        if (!inputTitulo.current.value || !inputCodigo.current.value || !inputSubTitulo.current.value || 
-            !inputDescricaoCurta.current.value || !inputDescricaoLonga.current.value || !inputFotos.current.value || 
-            !inputTipo.current.value || !inputFinalidade.current.value || !inputValor.current.value || 
-            !inputEndereco.current.value || !inputCidade.current.value) {
+        if (!inputTitulo.current.value || 
+            !inputCodigo.current.value || 
+            !inputFotos.current.value ||             
+            !inputFinalidade.current.value || 
+            !inputValor.current.value || 
+            !inputEndereco.current.value || 
+            !inputCidade.current.value) {
             setConfirmationMessage('Por favor, preencha todos os campos obrigatórios.');
             setTimeout(() => setConfirmationMessage(''), 5000);
             return;
@@ -110,8 +113,8 @@ function CadastroImovel() {
             <div className="form-item">
                 <input type="text" name="descricaoCurta" className="descricaoCurta" placeholder='Descrição Curta' ref={inputDescricaoCurta} />            
             </div>
-            <div className="form-item">
-                <input type="text" name="descricaoLonga" className="descricaoLonga" placeholder='Descrição Longa' ref={inputDescricaoLonga} />
+            <div className="form-item">                
+                <textarea name="descricaoLonga" className="descricaoLonga" placeholder='Descrição Longa' ref={inputDescricaoLonga}></textarea>
             </div>
             <div className="form-item">
                 <input type="file" name="fotos" className="fotos" ref={inputFotos} multiple />

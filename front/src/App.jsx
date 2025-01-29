@@ -6,12 +6,15 @@ import Login from './pages/login';
 import Home from './pages/home';
 import About from './pages/about';
 import NotFound from './pages/notfound';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/protected-route';
 import Contact from './pages/contact';
 import Imovel from './pages/imovel';
-import Cadastro from './pages/cadastro';
+import Imoveis from './pages/imoveis';
+import Usuarios from './pages/usuarios';
+import Usuario from './pages/usuario';
+import CadastroUsuario from './pages/cadastro-usuario';
+import CadastroImovel from './pages/cadastro-imovel';
 import Footer from './components/footer';
-import CadastroImovel from './pages/cadastroimovel';
 
 function App() {
     return (
@@ -19,10 +22,14 @@ function App() {
             <Router>
                 <Header />
                 <Routes>
+                    <Route path="/" element={<Home />}/>
                     <Route path="login" element={<Login />} />
-                    <Route path="/" element={<ProtectedRoute element={Home} />} />
-                    <Route path="imoveis/:id" element={<Imovel />} />
-                    <Route path="cadastro" element={<Cadastro />} />
+                    <Route path="/usuarios" element={<ProtectedRoute element={Usuarios} />} />
+                    <Route path="/usuarios/*" element={<ProtectedRoute element={Usuarios} />} />
+                    <Route path="usuarios/:id" element={<ProtectedRoute element={Usuario} />} />
+                    <Route path="imoveis" element={<Imoveis />} />                    
+                    <Route path="imoveis/:codigo" element={<Imovel />} />
+                    <Route path="cadastro" element={<CadastroUsuario />} />
                     <Route path="cadastro-imovel" element={<CadastroImovel />} />
                     <Route path="about" element={<About />} />
                     <Route path="contact" element={<Contact />} />                    

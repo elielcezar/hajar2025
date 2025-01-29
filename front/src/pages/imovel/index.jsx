@@ -7,39 +7,35 @@ function Imovel() {
 
   const params = useParams(); 
 
-  const [user, setUser] = useState('');
+  const [imovel, setImovel] = useState('');
 
-  async function getUser() { 
+  async function getImovel() { 
     try{
-      const user = await api.get(`/usuarios/${params.id}`);
-      setUser(user.data); 
-      console.log(user.data)
+      const imovelFromApi = await api.get(`/imoveis/${params.codigo}`);
+      setImovel(imovelFromApi.data[0]);       
     }catch{
-      console.error('Erro ao buscar usuário:', error);
+      console.error('Erro ao buscar imóvel:', error);
     }        
-  }   
+  }  
 
   useEffect(() => {  
-    getUser();
+    getImovel();
   }, []);
 
   const baseUrl = 'http://localhost:3000/uploads/'; 
 
-  /*console.log('ID do imóvel:', params.id);
-  console.log('User:', usuario);*/
-
   return (
     <>
-      <h1>{params.id}</h1>      
+      <h1>{params.codigo}</h1>      
 
-      <h1>Detalhes do Usuário</h1>
-      <p>ID: {user.id}</p>
-      <p>Nome: {user.name}</p>
-      <p>Email: {user.email}</p>
+      <h1>Detalhes do imóvel</h1>
+      <p>Código: {imovel.codigo}</p>
+      <p>Nome: {imovel.titulo}</p>
+      <p>Descrição: {imovel.descricaoLonga}</p>
       <ul>
-        {Array.isArray(user.photos) && user.photos.map((photo, index) => (
+        {Array.isArray(imovel.fotos) && imovel.fotos.map((foto, index) => (
           <li key={index}>
-            <img src={`${baseUrl}${photo}`} alt={`Foto ${index + 1}`} />
+            <img src={`${baseUrl}${foto}`} alt={`Foto ${index + 1}`} />
           </li>
         ))}
       </ul>

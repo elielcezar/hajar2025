@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import './style.css'
+import { useState, useEffect } from "react";
 import api from '../../services/api'
+import './style.css'
 
-function Home() { 
-
-  const [users, setUsers] = useState([]);
+export const Usuarios = () => {
+  
+    const [users, setUsers] = useState([]);
   
   async function getUsers() { 
       const usersFromApi = await api.get('/usuarios');
@@ -20,7 +20,7 @@ function Home() {
       getUsers();      
   }
 
-  const baseUrl = '/imoveis/'; 
+  const baseUrl = '/usuarios/'; 
   
   return (
     <>
@@ -42,4 +42,4 @@ function Home() {
   )
 }
 
-export default Home
+export default Usuarios
