@@ -14,6 +14,7 @@ import Usuarios from './pages/usuarios';
 import Usuario from './pages/usuario';
 import CadastroUsuario from './pages/cadastro-usuario';
 import CadastroImovel from './pages/cadastro-imovel';
+import EditarImovel from './pages/editar-imovel';
 import CadastroCategoria from './pages/cadastro-categoria';
 import Footer from './components/footer';
 
@@ -26,11 +27,12 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />}/>
                     <Route path="login" element={<Login />} />
-                    <Route path="/usuarios" element={<ProtectedRoute element={Usuarios} />} />
-                    <Route path="/usuarios/*" element={<ProtectedRoute element={Usuarios} />} />
+                    <Route path="usuarios" element={<ProtectedRoute element={Usuarios} />} />
+                    <Route path="usuarios/*" element={<ProtectedRoute element={Usuarios} />} />
                     <Route path="usuarios/:id" element={<ProtectedRoute element={Usuario} />} />
                     <Route path="imoveis" element={<Imoveis />} />                    
                     <Route path="imoveis/:codigo" element={<Imovel />} />
+                    <Route path="imoveis/edit/:id" element={<ProtectedRoute element={EditarImovel} />} />
                     <Route path="cadastro-usuario" element={<CadastroUsuario />} />
                     <Route path="cadastro-imovel" element={<CadastroImovel />} />
                     <Route path="cadastro-categoria" element={<CadastroCategoria />} />

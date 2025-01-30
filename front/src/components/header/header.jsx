@@ -29,6 +29,7 @@ function Header() {
                         <>
                         <li><NavLink to="usuarios">Usuários</NavLink></li>
                         <li><NavLink to="cadastro-imovel">Novo Imóvel</NavLink></li>  
+                        <li><NavLink to="imoveis/edit/:id">Editar Imóvel</NavLink></li>  
                         <li><NavLink to="cadastro-categoria">Nova Categria</NavLink></li>                      
                         <li><NavLink to="cadastro-usuario">Novo Usuário</NavLink></li>                        
                         </>
