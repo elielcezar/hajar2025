@@ -24,7 +24,7 @@ router.post('/imoveis', upload.array('fotos'), async (req, res) => {
     const { 
         titulo, 
         codigo, 
-        subtitulo, 
+        subTitulo, 
         descricaoCurta, 
         descricaoLonga,
         tipo,
@@ -36,22 +36,42 @@ router.post('/imoveis', upload.array('fotos'), async (req, res) => {
     const fotos = req.files.map(file => file.filename);
 
     try {
-        console.log('Dados recebidos:', {titulo, codigo, subtitulo, descricaoCurta, descricaoLonga, tipo, finalidade, valor, endereco, cidade, fotos});        
+        console.log('Dados recebidos:', {titulo, codigo, subTitulo, descricaoCurta, descricaoLonga, tipo, finalidade, valor, endereco, cidade, fotos});        
         
         const response = await prisma.imovel.create({
             data: {
                 titulo, 
                 codigo, 
-                subtitulo, 
+                subTitulo, 
                 descricaoCurta, 
-                descricaoLonga,
-                tipo,
-                finalidade,
+                descricaoLonga,                
                 valor,
                 endereco,
                 cidade,                
                 createdAt: new Date(),
-                fotos: fotos
+                fotos: fotos,
+                tipo: {
+                    create: [{
+                        tipo: {
+                            connect: {
+                                id: tipo
+                            }
+                        }
+                    }]
+                },
+                finalidade: {
+                    create: [{
+                        finalidade: {
+                            connect: {
+                                id: finalidade
+                            }
+                        }
+                    }]
+                }
+            },
+            include: {
+                tipo: true,
+                finalidade: true
             }
         });
         console.log('Imóvel criado:', response);
@@ -71,15 +91,41 @@ router.get('/imoveis', async (req, res) => {
 
         // Criar objeto de filtro apenas com parâmetros definidos
         const filtro = {};
-        if (req.query.codigo) filtro.codigo = req.query.codigo;
-        if (req.query.tipo) filtro.tipo = req.query.tipo;
-        if (req.query.finalidade) filtro.finalidade = req.query.finalidade;
+        if (req.query.codigo) filtro.codigo = req.query.codigo;                
         if (req.query.cidade) filtro.cidade = req.query.cidade;
-
-        console.log('Filtros aplicados:', filtro);
+        if (req.query.tipo) {
+            filtro.tipo = {
+                some: {
+                    tipo: {
+                        nome: req.query.tipo
+                    }
+                }
+            }
+        }
+        if (req.query.finalidade) {
+            filtro.finalidade = {
+                some: {
+                    finalidade: {
+                        nome: req.query.finalidade
+                    }
+                }
+            }
+        }         
 
         const imoveis = await prisma.imovel.findMany({
-            where: filtro
+            where: filtro,
+            include: {
+                tipo: {
+                    include: {
+                        tipo: true
+                    }
+                },
+                finalidade: {
+                    include: {
+                        finalidade: true
+                    }
+                }
+            }
         });
 
         console.log('Imóveis encontrados:', imoveis);

@@ -78,6 +78,24 @@ table{
 }
 
 form{
+  width: 100%;
+
+  & .form-item{
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .col-1{
+    width: 70%;
+  }
+  .col-2{
+    width: 30%;
+  }
+  label{
+    font-weight: 700;
+    margin-bottom: 7px;
+    display: inline-block;
+    font-size: 16px;
+  }
   & input,
   & textarea{
     width: 100%;
@@ -120,4 +138,41 @@ button{
 
 #main{
   margin: 50px 0;
+}
+
+.row{
+  display: flex;
+
+  & .col{
+    width: 50%;
+  }
+
+  & .col-1{
+    margin-right: 10px;
+  }
+  & .col-2{
+    margin-left: 10px;
+  }
+}
+  @media(orientation:portrait){
+    .row{
+      flex-direction: column;
+
+      & .col{
+        width: 100%;
+      }
+
+      & .col-1{
+        margin-right: 0;
+      }
+      & .col-2{
+        margin-left: 0;
+      }
+    }
+  }
+
+#main{
+  & h1{
+    margin: 0 0 40px 0;
+  }
 }

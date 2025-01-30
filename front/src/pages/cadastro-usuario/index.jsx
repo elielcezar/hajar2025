@@ -47,8 +47,10 @@ function CadastroUsuario() {
    
   return (
     <div id="main">
-    <h1>Cadastrar novo usuário</h1>
-      <div className="container">        
+    
+      <div className="container"> 
+
+        <h1>Cadastrar novo usuário</h1>       
         {confirmationMessage ? <p className="confirmation-message">{confirmationMessage}</p> : null}
 
         <form>

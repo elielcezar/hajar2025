@@ -17,7 +17,7 @@ model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
   name      String  
-  password  String?  
+  password  String?    
   createdAt DateTime? @default(now())  
 }
 
@@ -28,12 +28,63 @@ model Imovel {
   descricaoCurta  String?
   descricaoLonga  String?
   fotos           String[]  
-  tipo            String?
-  finalidade      String?
+  tipo            ImovelTipo[]
+  finalidade      ImovelFinalidade[]
   cidade          String?
   valor           String?
   codigo          String?
   endereco        String?  
-  createdAt       DateTime? @default(now())
-  //owner       User     @relation(fields: [ownerId], references: [id])
+  categorias      ImovelCategoria[]
+  createdAt       DateTime? @default(now())  
+}
+
+model Tipo {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  nome      String   @unique
+  imoveis   ImovelTipo[]
+  createdAt DateTime? @default(now())
+}
+
+model ImovelTipo {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  imovelId  String  @db.ObjectId
+  tipoId    String  @db.ObjectId
+  imovel    Imovel  @relation(fields: [imovelId], references: [id])
+  tipo      Tipo    @relation(fields: [tipoId], references: [id])
+
+  @@unique([imovelId, tipoId])
+}
+
+model Finalidade {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  nome      String   @unique
+  imoveis   ImovelFinalidade[]
+  createdAt DateTime? @default(now())
+}
+
+model ImovelFinalidade {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  imovelId      String      @db.ObjectId
+  finalidadeId  String      @db.ObjectId
+  imovel        Imovel      @relation(fields: [imovelId], references: [id])
+  finalidade    Finalidade  @relation(fields: [finalidadeId], references: [id])
+
+  @@unique([imovelId, finalidadeId])
+}
+
+model Categoria {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  nome      String   @unique
+  imoveis   ImovelCategoria[]
+  createdAt DateTime? @default(now())
+}
+
+model ImovelCategoria {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  imovelId    String    @db.ObjectId
+  categoriaId String    @db.ObjectId
+  imovel      Imovel    @relation(fields: [imovelId], references: [id])
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+
+  @@unique([imovelId, categoriaId])
 }

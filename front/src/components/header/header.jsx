@@ -28,8 +28,9 @@ function Header() {
                     {isAuthenticated ? (
                         <>
                         <li><NavLink to="usuarios">Usuários</NavLink></li>
-                        <li><NavLink to="cadastro-imovel">Novo Imóvel</NavLink></li>                        
-                        <li><NavLink to="cadastro">Novo Usuário</NavLink></li>
+                        <li><NavLink to="cadastro-imovel">Novo Imóvel</NavLink></li>  
+                        <li><NavLink to="cadastro-categoria">Nova Categria</NavLink></li>                      
+                        <li><NavLink to="cadastro-usuario">Novo Usuário</NavLink></li>                        
                         </>
                     ) : null}                    
                     <li><NavLink to="contact">Contato</NavLink></li>

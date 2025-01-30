@@ -1,22 +1,9 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import multer from 'multer';
 
 const prisma = new PrismaClient();
 const router = express.Router();
-
-// Configuração do multer para armazenar arquivos localmente
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
-});
-
-const upload = multer({ storage });
 
 // Criar usuario
 router.post('/usuarios', async (req, res) => {
