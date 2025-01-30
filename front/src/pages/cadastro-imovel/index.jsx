@@ -95,7 +95,7 @@ function CadastroImovel() {
     }
    
   return (
-    <>
+    <div id="main">
     <h1>Cadastrar novo imóvel</h1>
       <div className="container">        
         {confirmationMessage ? <p className="confirmation-message">{confirmationMessage}</p> : null}
@@ -140,7 +140,7 @@ function CadastroImovel() {
         </form>       
         
       </div>      
-    </>
+    </div>
   )
 }
 

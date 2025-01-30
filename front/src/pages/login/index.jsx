@@ -34,7 +34,7 @@ function Login() {
     }
    
   return (
-    <>
+    <div id="main">
       <div className="container">        
         {confirmationMessage ? <p className="confirmation-message">{confirmationMessage}</p> : null}
 
@@ -51,7 +51,7 @@ function Login() {
         </form>        
         
       </div>      
-    </>
+    </div>
   )
 }
 

@@ -16,7 +16,8 @@ import CadastroUsuario from './pages/cadastro-usuario';
 import CadastroImovel from './pages/cadastro-imovel';
 import Footer from './components/footer';
 
-function App() {
+function App() {   
+        
     return (
         <AuthProvider>
             <Router>

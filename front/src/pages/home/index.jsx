@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import './style.css'
 import api from '../../services/api'
+import { EmblaCarousel } from '../../components/carrossel';  
+import './style.css';
 
 function Home() { 
 
@@ -20,29 +21,28 @@ function Home() {
   
   return (
     <>
-      <div className="container">  
-
-      <div id="imoveis">
-            {imoveis.map((imovel) => (
-                <div className="item" key={imovel.id}>
-                    <div className="card">
-                        <div className="capa">
-                            <a href={`/imoveis/${imovel.codigo}`}>
-                                <img src={`${baseUrl}${imovel.fotos[0]}`} alt="" />
-                            </a>                 
-                            <p className="finalidade">{imovel.finalidade}</p>
-                            <p className="valor">{imovel.valor}</p>
-                        </div>
-                        <div className="content">
-                            <h3>{imovel.titulo}</h3>
-                            <p className="subtitulo">{imovel.subtitulo}</p>                        
-                        </div>
-                    </div>                
-                </div>
-            ))}
-        </div>
-        
-      </div>      
+      <EmblaCarousel />      
+        <div className="container">  
+          <div id="imoveis">
+                {imoveis.map((imovel) => (
+                    <div className="item" key={imovel.id}>
+                        <div className="card">
+                            <div className="capa">
+                                <a href={`/imoveis/${imovel.codigo}`}>
+                                    <img src={`${baseUrl}${imovel.fotos[0]}`} alt="" />
+                                </a>                 
+                                <p className="finalidade">{imovel.finalidade}</p>
+                                <p className="valor">{imovel.valor}</p>
+                            </div>
+                            <div className="content">
+                                <h3>{imovel.titulo}</h3>
+                                <p className="subtitulo">{imovel.subtitulo}</p>                        
+                            </div>
+                        </div>                
+                    </div>
+                ))}
+          </div>        
+        </div> 
     </>
   )
 }

@@ -19,7 +19,7 @@ export const Imoveis = () => {
   const baseUrl = 'http://localhost:3000/uploads/'
 
   return (
-    <>
+    <div id="main">
         <div className="container">
         <h1>cadastrado</h1>
         <div id="imoveis">
@@ -42,7 +42,7 @@ export const Imoveis = () => {
             ))}
         </div>
         </div>
-    </>
+    </div>
   )
 }
 

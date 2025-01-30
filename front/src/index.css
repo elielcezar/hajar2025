@@ -13,9 +13,9 @@ body{
 }
 
 .container{    
+    width: 96%;
     max-width: 1300px;
-    margin: 0 auto;  
-    height: 100vh;
+    margin: 0 auto;      
     display: flex;
     flex-direction: column;    
 }
@@ -118,3 +118,6 @@ button{
   }
 }
 
+#main{
+  margin: 50px 0;
+}

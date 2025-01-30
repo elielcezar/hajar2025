@@ -1,0 +1,17 @@
+
+.embla {    
+  width: 100%;    
+  overflow: hidden;    
+  height: 500px;    
+}
+img{
+  width: 100%;
+}
+.embla__container {
+  display: flex;
+  height: 500px;
+}
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}

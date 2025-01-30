@@ -46,7 +46,7 @@ function CadastroUsuario() {
     }
    
   return (
-    <>
+    <div id="main">
     <h1>Cadastrar novo usuário</h1>
       <div className="container">        
         {confirmationMessage ? <p className="confirmation-message">{confirmationMessage}</p> : null}
@@ -67,7 +67,7 @@ function CadastroUsuario() {
         </form>       
         
       </div>      
-    </>
+    </div>
   )
 }
 

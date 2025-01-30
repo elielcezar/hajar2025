@@ -33,7 +33,9 @@ function Header() {
                         </>
                     ) : null}                    
                     <li><NavLink to="contact">Contato</NavLink></li>
-                    <li><NavLink to="login">Login</NavLink></li> 
+                    {!isAuthenticated ? (
+                        <li><NavLink to="login">Login</NavLink></li> 
+                    ) : null}
                 </ul>
             </nav>
 

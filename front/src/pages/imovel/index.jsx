@@ -25,7 +25,7 @@ function Imovel() {
   const baseUrl = 'http://localhost:3000/uploads/'; 
 
   return (
-    <>
+    <div id="main">
       <h1>{params.codigo}</h1>      
 
       <h1>Detalhes do imóvel</h1>
@@ -39,7 +39,7 @@ function Imovel() {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   )
 }
 
