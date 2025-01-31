@@ -32,6 +32,12 @@ function Login() {
             setTimeout(() => setConfirmationMessage(''), 5000);
         }
     }
+
+    function handleKeyPress(event){
+      if (event.key === 'Enter') {
+          handleLogin();
+      }
+    }
    
   return (
     <div id="main">
@@ -40,10 +46,10 @@ function Login() {
 
         <form>           
             <div className="form-item">
-                <input type="email" name="email" className="email" placeholder='Email' ref={inputEmail} />
+                <input type="email" name="email" className="email" placeholder='Email' ref={inputEmail} onKeyPress={handleKeyPress} />
             </div>
             <div className="form-item">
-                <input type="password" name="password" className="password" placeholder='Senha' ref={inputPassword} />
+                <input type="password" name="password" className="password" placeholder='Senha' ref={inputPassword} onKeyPress={handleKeyPress} />
             </div>
             <div className="form-item">
                 <button type='button' onClick={handleLogin}>- Enviar -</button>

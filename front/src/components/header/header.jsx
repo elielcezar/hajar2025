@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import './style.css';
 

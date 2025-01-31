@@ -4,58 +4,93 @@ import FormCategorias from '../../components/form-categorias';
 import api from '../../services/api';
 import './style.css';
 
-function CadastroImovel() {    
-    
-    const params = useParams();
-    
-    const inputTitulo = useRef();
-    const inputCodigo = useRef();
-    const inputSubTitulo = useRef();
-    const inputDescricaoCurta = useRef();
-    const inputDescricaoLonga = useRef();
-    const inputFotos = useRef();
-    const inputTipo = useRef();
-    const inputFinalidade = useRef();
-    const inputValor = useRef();
-    const inputEndereco = useRef();
-    const inputCidade = useRef();
+function EditarImovel() {    
 
-    const [imovelData, setImovel] = useState('');
-    const [confirmationMessage, setConfirmationMessage] = useState('');  
+    const [imovelData, setImovel] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [tipos, setTipos] = useState([]);
+    const [finalidades, setFinalidades] = useState([]);
+    const [existingImages, setExistingImages] = useState([]);
 
-    async function getImovel(){
-        const imovelFromAPI = await api.get(`/imoveis/${params.id}`);
-        setImovel(imovelFromAPI.data)
-    }
+    const inputTitulo = useRef(null);
+    const inputCodigo = useRef(null);
+    const inputSubTitulo = useRef(null);
+    const inputDescricaoCurta = useRef(null);
+    const inputDescricaoLonga = useRef(null);
+    const inputFotos = useRef(null);
+    const inputTipo = useRef(null);
+    const inputFinalidade = useRef(null);
+    const inputValor = useRef(null);
+    const inputEndereco = useRef(null);
+    const inputCidade = useRef(null); 
+    
+    const { id } = useParams();
 
     useEffect(() => {
-        getImovel();
-    }, [])
+        async function fetchImovel() {
+            try {
+                const response = await api.get(`/imoveis/${id}`);
+                setImovel(response.data);
+                setExistingImages(response.data.fotos || []);
+            } catch (error) {
+                console.error('Erro ao buscar imóvel:', error);
+                setError('Erro ao carregar dados do imóvel');
+            } finally {
+                setLoading(false);
+            }
+        }                
+        fetchImovel();
+    }, []);
 
     useEffect(() => {
-        if(imovelData){
-            inputTitulo.current.value = imovelData.titulo;
-            inputCodigo = imovelData.codigo;
-            inputSubTitulo = imovelData.subTitulo;
-            inputDescricaoCurta = imovelData.descricaoCurta;
-            inputDescricaoLonga = imovelData.descricaoLonga;
-            //inputFotos = imovelData.titulo;
-            inputTipo = imovelData.tipo;
-            inputFinalidade = imovelData.finalidade;
-            inputValor = imovelData.valor;
-            inputEndereco = imovelData.endereco;
-            inputCidade = imovelData.cidade;
+        console.log(imovelData);
+    });
+
+    useEffect(() => {
+        async function fetchCategorias() {
+            try {
+                const [tiposResponse, finalidadesResponse] = await Promise.all([
+                    api.get('/tipo'),
+                    api.get('/finalidade')
+                ]);
+                setTipos(tiposResponse.data);
+                setFinalidades(finalidadesResponse.data);
+            } catch (error) {
+                console.error('Erro ao buscar categorias:', error);
+                setError('Erro ao carregar categorias');
+            }
         }
-    })
+        fetchCategorias();
+    }, []);
 
-    async function handleSubmit() {
+    useEffect(() => {
+        if (imovelData && !loading) {
+            inputTitulo.current.value = imovelData.titulo || '';
+            inputCodigo.current.value = imovelData.codigo || '';
+            inputSubTitulo.current.value = imovelData.subTitulo || '';
+            inputDescricaoCurta.current.value = imovelData.descricaoCurta || '';
+            inputDescricaoLonga.current.value = imovelData.descricaoLonga || '';
+            inputTipo.current.value = imovelData.tipo?.[0]?.tipo?.id || '';
+            inputFinalidade.current.value = imovelData.finalidade?.[0]?.finalidade?.id || '';
+            inputValor.current.value = imovelData.valor || '';
+            inputEndereco.current.value = imovelData.endereco || '';
+            inputCidade.current.value = imovelData.cidade || '';
+        }
+    }, [imovelData, loading]);
+
+
+    if (loading) return <div>Carregando...</div>;
+if (error) return <div>Erro ao carregar imóvel: {error.message}</div>;
+if (!imovelData || !imovelData.tipo || !imovelData.finalidade) return <div>Imóvel não encontrado</div>;
+
+    async function handleSubmit(event) {
 
         event.preventDefault();
 
         // Verificar se todos os campos obrigatórios estão preenchidos
         if (!inputTitulo.current.value || 
-            !inputCodigo.current.value || 
-            !inputFotos.current.value ||             
+            !inputCodigo.current.value ||             
             !inputFinalidade.current.value || 
             !inputValor.current.value || 
             !inputEndereco.current.value || 
@@ -78,8 +113,11 @@ function CadastroImovel() {
             formData.append('cidade', inputCidade.current.value);               
 
         // Adiciona múltiplas fotos ao FormData e ao objeto userData para log
-        Array.from(inputFotos.current.files).forEach((file, index) => {
+        Array.from(inputFotos.current.files).forEach((file) => {
             formData.append('fotos', file);            
+        });
+        existingImages.forEach(image => {
+            formData.append('existingFotos', image);
         });
 
         // Loga o conteúdo do FormData no console
@@ -87,39 +125,13 @@ function CadastroImovel() {
             console.log(`${key}:`, value);
         }        
 
-        try {            
-            const response = await api.post('/imoveis', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-
-            console.log('Response:', response);
-
-            if (response.status === 200 || response.status === 201) {                
-
-                inputTitulo.current.value = '';
-                inputCodigo.current.value = '';
-                inputSubTitulo.current.value = '';
-                inputDescricaoCurta.current.value = '';
-                inputDescricaoLonga.current.value = '';
-                inputFotos.current.value = '';                
-                inputTipo.current.value = '';
-                inputFinalidade.current.value = '';
-                inputValor.current.value = '';
-                inputEndereco.current.value = '';
-                inputCidade.current.value = '';
-
-                setConfirmationMessage('Imóvel cadastrado com sucesso!');
-                setTimeout(() => setConfirmationMessage(''), 5000);
-                
-            } else {
-                throw new Error('Erro ao cadastrar imóvel');
-            }
+        try {
+            await api.put(`/imoveis/${id}`, formData);
+            setConfirmationMessage('Imóvel atualizado com sucesso!');
+            setTimeout(() => setConfirmationMessage(''), 5000);
         } catch (error) {
-            console.error('Erro ao cadastrar imóvel:', error);
-            console.error('Detalhes do erro:', error.response ? error.response.data : error.message);
-            setConfirmationMessage('Erro ao cadastrar imóvel.');
+            console.error('Erro ao atualizar imóvel:', error);
+            setConfirmationMessage('Erro ao atualizar imóvel.');
             setTimeout(() => setConfirmationMessage(''), 5000);
         }
     }
@@ -127,9 +139,9 @@ function CadastroImovel() {
   return (
     <div id="main">
         <div className="container">        
-            <h1>Cadastrar novo imóvel</h1>
+            <h1>Editar imóvel</h1>
             
-            {confirmationMessage ? <p className="confirmation-message">{confirmationMessage}</p> : null}
+            
 
             <form>                
                 <div className="form-item">
@@ -142,17 +154,17 @@ function CadastroImovel() {
                 </div>
 
                 <div className="form-item">
-                            <label htmlFor="subtitulo">Descrição curta</label>
-                            <input type="text" name="descricaoCurta" className="descricaoCurta" ref={inputDescricaoCurta} />            
-                        </div>
-                        <div className="form-item">   
-                            <label htmlFor="subtitulo">Descrição longa</label>             
-                            <textarea name="descricaoLonga" className="descricaoLonga" ref={inputDescricaoLonga}></textarea>
-                        </div>
-                        <div className="form-item">
-                            <label htmlFor="subtitulo">Fotos</label>
-                            <input type="file" name="fotos" className="fotos" ref={inputFotos} multiple />
-                        </div>
+                    <label htmlFor="subtitulo">Descrição curta</label>
+                    <input type="text" name="descricaoCurta" className="descricaoCurta" ref={inputDescricaoCurta} />            
+                </div>
+                <div className="form-item">   
+                    <label htmlFor="subtitulo">Descrição longa</label>             
+                    <textarea name="descricaoLonga" className="descricaoLonga" ref={inputDescricaoLonga}></textarea>
+                </div>
+                <div className="form-item">
+                    <label htmlFor="subtitulo">Fotos</label>
+                    <input type="file" name="fotos" className="fotos" ref={inputFotos} multiple />
+                </div>
                   
                 
                 <div className="row">
@@ -163,14 +175,12 @@ function CadastroImovel() {
                             <input type="text" name="codigo" className="codigo" ref={inputCodigo} />
                         </div>
                         <div className="form-item">
-                            <label htmlFor="tipo">Tipo de imóvel</label>
-                            {/*<input type="text" name="tipo" className="tipo" placeholder='Tipo' ref={inputTipo} />*/}
-                            <FormCategorias endpoint="tipo" inputRef={inputTipo} />
+                            <label htmlFor="tipo">Tipo de imóvel</label>                            
+                            <FormCategorias endpoint="tipo" selectedId={imovelData?.tipo[0]?.tipo.id || ''} />
                         </div>
                         <div className="form-item">
-                            <label htmlFor="finalidade">Finalidade</label>
-                            {/*<input type="text" name="finalidade" className="finalidade" ref={inputFinalidade} />*/}
-                            <FormCategorias endpoint="finalidade" inputRef={inputFinalidade} />
+                            <label htmlFor="finalidade">Finalidade</label>                            
+                            <FormCategorias endpoint="finalidade" selectedId={imovelData?.finalidade[0]?.finalidade.id || ''} />
                         </div>
                         <div className="form-item">
                             <label htmlFor="subtitulo">Valor</label>
@@ -197,4 +207,4 @@ function CadastroImovel() {
   )
 }
 
-export default CadastroImovel
+export default EditarImovel

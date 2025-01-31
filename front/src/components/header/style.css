@@ -33,6 +33,7 @@
     padding: 10px 20px;
     cursor: pointer;
     font-size: 16px;
+    max-width: 120px;
 }
 
 .logout-button:hover {

@@ -10,7 +10,7 @@ function Home() {
   async function getImoveis(){
       const imoveisFromAPI = await api.get('/imoveis')
       setImoveis(imoveisFromAPI.data.reverse());
-      console.log('Imoveis:', imoveis)
+      console.log(imoveisFromAPI.data)
   } 
 
   useEffect(() => {
@@ -22,27 +22,27 @@ function Home() {
   return (
     <>
       <EmblaCarousel />      
-        <div className="container">  
-          <div id="imoveis">
-                {imoveis.map((imovel) => (
-                    <div className="item" key={imovel.id}>
-                        <div className="card">
-                            <div className="capa">
-                                <a href={`/imoveis/${imovel.codigo}`}>
-                                    <img src={`${baseUrl}${imovel.fotos[0]}`} alt="" />
-                                </a>                 
-                                <p className="finalidade">{imovel.finalidade}</p>
-                                <p className="valor">{imovel.valor}</p>
-                            </div>
-                            <div className="content">
-                                <h3>{imovel.titulo}</h3>
-                                <p className="subtitulo">{imovel.subtitulo}</p>                        
-                            </div>
-                        </div>                
-                    </div>
-                ))}
-          </div>        
-        </div> 
+      <div className="container">  
+        <div id="imoveis">
+              {imoveis.map((imovel) => (
+                  <div className="item" key={imovel.id}>
+                      <div className="card">
+                          <div className="capa">
+                              <a href={`/imoveis/${imovel.codigo}`}>
+                                  <img src={`${baseUrl}${imovel.fotos[0]}`} alt="" />
+                              </a>                 
+                              <p className="finalidade">{imovel.finalidade.finalidade}</p>
+                              <p className="valor">{imovel.valor}</p>
+                          </div>
+                          <div className="content">
+                              <h3>{imovel.titulo}</h3>
+                              <p className="subtitulo">{imovel.subtitulo}</p>                        
+                          </div>
+                      </div>                
+                  </div>
+              ))}
+        </div>        
+      </div> 
     </>
   )
 }

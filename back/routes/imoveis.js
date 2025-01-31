@@ -138,13 +138,25 @@ router.get('/imoveis', async (req, res) => {
 });
 
 // Obter imovel pelo ID
-/*router.get('/imoveis/:id', async (req, res) => {
+router.get('/imoveis/id/:id', async (req, res) => {
     try{
         const {id} = req.params;
 
         const imovel = await prisma.imovel.findUnique({
             where: {
                 id: id
+            },
+            include: {
+                tipo: {
+                    include: {
+                        tipo: true
+                    }
+                },
+                finalidade: {
+                    include: {
+                        finalidade: true
+                    }
+                }
             }
         });
         if(!imovel){
@@ -159,7 +171,7 @@ router.get('/imoveis', async (req, res) => {
             error: 'Erro ao buscar imóvel'
         });
     }
-});*/
+});
 
 
 // Obter imovel pelo codigo do cadastro
