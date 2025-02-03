@@ -201,6 +201,69 @@ router.get('/imoveis/:codigo', async (req, res) => {
     }
 });
 
+// Atualizar imovel
+router.put('/imoveis/:id', upload.array('fotos'), async (req, res) => {    
+
+    try{
+        console.log('Recebendo requisição PUT /imoveis');    
+
+        const { id } = req.params;
+        const {
+            titulo,
+            codigo,
+            subTitulo,
+            descricaoCurta,
+            descricaoLonga,
+            tipo,
+            finalidade,
+            valor,
+            endereco,
+            cidade
+        } = req.body;
+
+        const fotos = req.files ? req.files.map(file => file.filename) : [];
+
+        const data = {
+            titulo,
+            codigo,
+            subTitulo,
+            descricaoCurta,
+            descricaoLonga,
+            valor,
+            endereco,
+            cidade,
+            fotos
+        };
+
+        if (tipo) {
+            data.tipo = {
+                connect: tipo.map(tipoId => ({ id: tipoId }))
+            };
+        }
+
+        if (finalidade) {
+            data.finalidade = {
+                connect: finalidade.map(finalidadeId => ({ id: finalidadeId }))
+            };
+        }
+
+        const response = await prisma.imovel.update({
+            where: { id },
+            data,
+            include: {
+                tipo: true,
+                finalidade: true
+            }
+        });
+        
+        console.log('Imóvel atualizado:', response);
+        res.status(200).json(req.body);
+    }catch (error){
+        console.error('Erro ao atualizar imóvel:', error);
+        res.status(500).json({ error: 'Erro ao atualizar imóvel' });
+    }
+});
+
 export default router;
 
 

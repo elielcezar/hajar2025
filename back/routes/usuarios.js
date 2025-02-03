@@ -97,7 +97,7 @@ router.put('/usuarios/:id', async (req, res) => {
         });
         console.log('Usuário atualizado:', response);
         res.status(200).json(req.body);
-    }catch{
+    }catch(error){
         console.error('Erro ao atualizar usuário:', error);
         res.status(500).json({ error: 'Erro ao atualizar usuário' });
     }

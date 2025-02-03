@@ -6,6 +6,8 @@ import './style.css';
 
 function EditarImovel() {    
 
+    const [confirmationMessage, setConfirmationMessage] = useState('');  
+
     const [imovelData, setImovel] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -30,7 +32,7 @@ function EditarImovel() {
     useEffect(() => {
         async function fetchImovel() {
             try {
-                const response = await api.get(`/imoveis/${id}`);
+                const response = await api.get(`/imoveis/id/${id}`);
                 setImovel(response.data);
                 setExistingImages(response.data.fotos || []);
             } catch (error) {
@@ -66,57 +68,61 @@ function EditarImovel() {
 
     useEffect(() => {
         if (imovelData && !loading) {
-            inputTitulo.current.value = imovelData.titulo || '';
-            inputCodigo.current.value = imovelData.codigo || '';
-            inputSubTitulo.current.value = imovelData.subTitulo || '';
-            inputDescricaoCurta.current.value = imovelData.descricaoCurta || '';
-            inputDescricaoLonga.current.value = imovelData.descricaoLonga || '';
-            inputTipo.current.value = imovelData.tipo?.[0]?.tipo?.id || '';
-            inputFinalidade.current.value = imovelData.finalidade?.[0]?.finalidade?.id || '';
-            inputValor.current.value = imovelData.valor || '';
-            inputEndereco.current.value = imovelData.endereco || '';
-            inputCidade.current.value = imovelData.cidade || '';
+            if (inputTitulo.current) inputTitulo.current.value = imovelData.titulo || '';
+            if (inputCodigo.current) inputCodigo.current.value = imovelData.codigo || '';
+            if (inputSubTitulo.current) inputSubTitulo.current.value = imovelData.subTitulo || '';
+            if (inputDescricaoCurta.current) inputDescricaoCurta.current.value = imovelData.descricaoCurta || '';
+            if (inputDescricaoLonga.current) inputDescricaoLonga.current.value = imovelData.descricaoLonga || '';
+            if (inputTipo.current) inputTipo.current.value = imovelData.tipo?.[0]?.tipo?.id || '';
+            if (inputFinalidade.current) inputFinalidade.current.value = imovelData.finalidade?.[0]?.finalidade?.id || '';
+            if (inputValor.current) inputValor.current.value = imovelData.valor || '';
+            if (inputEndereco.current) inputEndereco.current.value = imovelData.endereco || '';
+            if (inputCidade.current) inputCidade.current.value = imovelData.cidade || '';
         }
     }, [imovelData, loading]);
 
 
     if (loading) return <div>Carregando...</div>;
-if (error) return <div>Erro ao carregar imóvel: {error.message}</div>;
-if (!imovelData || !imovelData.tipo || !imovelData.finalidade) return <div>Imóvel não encontrado</div>;
+    if (error) return <div>Erro ao carregar imóvel: {error.message}</div>;
+    if (!imovelData || !imovelData.tipo || !imovelData.finalidade) return <div>Imóvel não encontrado</div>;
 
     async function handleSubmit(event) {
 
         event.preventDefault();
 
         // Verificar se todos os campos obrigatórios estão preenchidos
-        if (!inputTitulo.current.value || 
-            !inputCodigo.current.value ||             
-            !inputFinalidade.current.value || 
-            !inputValor.current.value || 
-            !inputEndereco.current.value || 
-            !inputCidade.current.value) {
+        /*if (!inputTitulo.current?.value || 
+            !inputCodigo.current?.value ||             
+            !inputFinalidade.current?.value || 
+            !inputValor.current?.value || 
+            !inputEndereco.current?.value || 
+            !inputCidade.current?.value) {
             setConfirmationMessage('Por favor, preencha todos os campos obrigatórios.');
             setTimeout(() => setConfirmationMessage(''), 5000);
             return;
-        }
+        }*/
         
-        const formData = new FormData();
-            formData.append('titulo', inputTitulo.current.value);
-            formData.append('codigo', inputCodigo.current.value);
-            formData.append('subTitulo', inputSubTitulo.current.value);
-            formData.append('descricaoCurta', inputDescricaoCurta.current.value);
-            formData.append('descricaoLonga', inputDescricaoLonga.current.value);
-            formData.append('tipo', inputTipo.current.value);
-            formData.append('finalidade', inputFinalidade.current.value);
-            formData.append('valor', inputValor.current.value);
-            formData.append('endereco', inputEndereco.current.value);
-            formData.append('cidade', inputCidade.current.value);               
+            const formData = new FormData();
+            formData.append('titulo', inputTitulo.current?.value || '');
+            formData.append('codigo', inputCodigo.current?.value || '');
+            formData.append('subTitulo', inputSubTitulo.current?.value || '');
+            formData.append('descricaoCurta', inputDescricaoCurta.current?.value || '');
+            formData.append('descricaoLonga', inputDescricaoLonga.current?.value || '');
+            formData.append('tipo', inputTipo.current?.value || '');
+            formData.append('finalidade', inputFinalidade.current?.value || '');
+            formData.append('valor', inputValor.current?.value || '');
+            formData.append('endereco', inputEndereco.current?.value || '');
+            formData.append('cidade', inputCidade.current?.value || '');
+        
+        // Adiciona múltiplas fotos ao FormData
+        if (inputFotos.current && inputFotos.current.files) {
+            Array.from(inputFotos.current.files).forEach((file) => {
+                formData.append('fotos', file);            
+            });
+        }
 
-        // Adiciona múltiplas fotos ao FormData e ao objeto userData para log
-        Array.from(inputFotos.current.files).forEach((file) => {
-            formData.append('fotos', file);            
-        });
-        existingImages.forEach(image => {
+        // Adiciona as imagens existentes ao FormData
+        existingImages.forEach((image) => {
             formData.append('existingFotos', image);
         });
 
@@ -134,14 +140,20 @@ if (!imovelData || !imovelData.tipo || !imovelData.finalidade) return <div>Imóv
             setConfirmationMessage('Erro ao atualizar imóvel.');
             setTimeout(() => setConfirmationMessage(''), 5000);
         }
+
+        console.log('Dados enviados:', formData);
+    }
+
+    function handleDeleteImage(image) {
+        setExistingImages(existingImages.filter(img => img !== image));
     }
    
   return (
     <div id="main">
         <div className="container">        
-            <h1>Editar imóvel</h1>
-            
-            
+            <h1>Editar imóvel</h1>  
+
+            {confirmationMessage ? <p className="confirmation-message">{confirmationMessage}</p> : null}          
 
             <form>                
                 <div className="form-item">
@@ -160,9 +172,17 @@ if (!imovelData || !imovelData.tipo || !imovelData.finalidade) return <div>Imóv
                 <div className="form-item">   
                     <label htmlFor="subtitulo">Descrição longa</label>             
                     <textarea name="descricaoLonga" className="descricaoLonga" ref={inputDescricaoLonga}></textarea>
-                </div>
+                </div>               
                 <div className="form-item">
                     <label htmlFor="subtitulo">Fotos</label>
+                    <div className="existing-images">
+                            {existingImages.map((image, index) => (
+                                <div key={index} className="image-item">
+                                    <img src={`http://localhost:3000/uploads/${image}`} alt={`Imagem ${index + 1}`} />
+                                    <button type="button" onClick={() => handleDeleteImage(image)}>Excluir</button>
+                                </div>
+                            ))}
+                        </div>
                     <input type="file" name="fotos" className="fotos" ref={inputFotos} multiple />
                 </div>
                   
@@ -193,7 +213,7 @@ if (!imovelData || !imovelData.tipo || !imovelData.finalidade) return <div>Imóv
                         <div className="form-item">
                             <label htmlFor="subtitulo">Cidade</label>
                             <input type="text" name="cidade" className="cidade" ref={inputCidade} />
-                        </div>                         
+                        </div>      
                     
                 </div>{/*row*/}
 
