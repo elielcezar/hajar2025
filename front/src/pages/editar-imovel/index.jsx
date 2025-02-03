@@ -6,27 +6,27 @@ import './style.css';
 
 function EditarImovel() {    
 
-    const [confirmationMessage, setConfirmationMessage] = useState('');  
-
-    const [imovelData, setImovel] = useState(null);
+    const [confirmationMessage, setConfirmationMessage] = useState('');          
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [tipo, setTipo] = useState('');
-    const [finalidade, setFinalidade] = useState('');
-    const [existingImages, setExistingImages] = useState([]);
-
-    const inputTitulo = useRef(null);
-    const inputCodigo = useRef(null);
-    const inputSubTitulo = useRef(null);
-    const inputDescricaoCurta = useRef(null);
-    const inputDescricaoLonga = useRef(null);
-    const inputFotos = useRef(null);
-    const inputTipo = useRef(null);
-    const inputFinalidade = useRef(null);
-    const inputValor = useRef(null);
-    const inputEndereco = useRef(null);
-    const inputCidade = useRef(null); 
     
+    const [imovelData, setImovel] = useState(null);
+    const [tipo, setTipo] = useState('');
+    const [finalidade, setFinalidade] = useState('');   
+    const [currentPhotos, setCurrentPhotos] = useState([]);
+    const [formData, setFormData] = useState({
+        titulo: '',
+        codigo: '',
+        subTitulo: '',
+        descricaoCurta: '',
+        descricaoLonga: '',
+        valor: '',
+        endereco: '',
+        cidade: '',
+        fotos: ''
+    });
+
+    const inputFotos = useRef(null);    
     const { id } = useParams();
 
     useEffect(() => {
@@ -34,9 +34,20 @@ function EditarImovel() {
             try {
                 const response = await api.get(`/imoveis/id/${id}`);
                 setImovel(response.data);
-                setExistingImages(response.data.fotos || []);
+                setFormData({
+                    titulo: response.data.titulo,
+                    subTitulo: response.data.subTitulo,
+                    descricaoCurta: response.data.descricaoCurta,
+                    descricaoLonga: response.data.descricaoLonga,
+                    codigo: response.data.codigo,                    
+                    valor: response.data.valor,
+                    endereco: response.data.endereco,
+                    cidade: response.data.cidade,
+                    fotos: response.data.fotos
+                });                
                 setTipo(response.data.tipo[0]?.tipo.id);
-                setFinalidade(response.data.finalidade[0]?.finalidade.id);
+                setFinalidade(response.data.finalidade[0]?.finalidade.id);                
+                setCurrentPhotos(response.data.fotos || []);
                 setLoading(false);
             } catch (error) {
                 setError('Erro ao buscar imóvel:', error);
@@ -67,109 +78,59 @@ function EditarImovel() {
         fetchCategorias();
     }, []);
 
-    useEffect(() => {
-        if (imovelData && !loading) {
-            if (inputTitulo.current) inputTitulo.current.value = imovelData.titulo || '';
-            if (inputCodigo.current) inputCodigo.current.value = imovelData.codigo || '';
-            if (inputSubTitulo.current) inputSubTitulo.current.value = imovelData.subTitulo || '';
-            if (inputDescricaoCurta.current) inputDescricaoCurta.current.value = imovelData.descricaoCurta || '';
-            if (inputDescricaoLonga.current) inputDescricaoLonga.current.value = imovelData.descricaoLonga || '';
-            if (inputTipo.current) inputTipo.current.value = imovelData.tipo?.[0]?.tipo?.id || '';
-            if (inputFinalidade.current) inputFinalidade.current.value = imovelData.finalidade?.[0]?.finalidade?.id || '';
-            if (inputValor.current) inputValor.current.value = imovelData.valor || '';
-            if (inputEndereco.current) inputEndereco.current.value = imovelData.endereco || '';
-            if (inputCidade.current) inputCidade.current.value = imovelData.cidade || '';
-        }
-    }, [imovelData, loading]);
+    async function handleSubmit(e) {    
+        e.preventDefault();
 
-
-    if (loading) return <div>Carregando...</div>;
-    if (error) return <div>Erro ao carregar imóvel: {error.message}</div>;
-    if (!imovelData || !imovelData.tipo || !imovelData.finalidade) return <div>Imóvel não encontrado</div>;
-
-    async function handleSubmit(event) {
-
-        event.preventDefault();
-
-        /*const updatedImovel = {
-            codigo: inputCodigo.current.value,
-            valor: inputValor.current.value,
-            endereco: inputEndereco.current.value,
-            tipo,
-            finalidade
-        };*/
-
-        //console.log('Updated Imovel:', updatedImovel); // Log the updated data
-
-        // Verificar se todos os campos obrigatórios estão preenchidos
-        /*if (!inputTitulo.current?.value || 
-            !inputCodigo.current?.value ||             
-            !inputFinalidade.current?.value || 
-            !inputValor.current?.value || 
-            !inputEndereco.current?.value || 
-            !inputCidade.current?.value) {
-            setConfirmationMessage('Por favor, preencha todos os campos obrigatórios.');
-            setTimeout(() => setConfirmationMessage(''), 5000);
-            return;
-        }*/
-        
-            const formData = new FormData();
-            formData.append('titulo', inputTitulo.current?.value || '');
-            formData.append('codigo', inputCodigo.current?.value || '');
-            formData.append('subTitulo', inputSubTitulo.current?.value || '');
-            formData.append('descricaoCurta', inputDescricaoCurta.current?.value || '');
-            formData.append('descricaoLonga', inputDescricaoLonga.current?.value || '');
-            /*formData.append('tipo', inputTipo.current?.value || '');
-            formData.append('finalidade', inputFinalidade.current?.value || '');*/
-            formData.append('valor', inputValor.current?.value || '');
-            formData.append('endereco', inputEndereco.current?.value || '');
-            formData.append('cidade', inputCidade.current?.value || '');
-            formData.append('tipo', tipo);
-            formData.append('finalidade', finalidade);
-
-        
-        // Adiciona múltiplas fotos ao FormData
-        if (inputFotos.current && inputFotos.current.files) {
-            Array.from(inputFotos.current.files).forEach((file) => {
-                formData.append('fotos', file);            
-            });
-        }
-
-        // Adiciona as imagens existentes ao FormData
-        existingImages.forEach((image) => {
-            formData.append('existingFotos', image);
+        // Cria o objeto que será enviado sempre via FormData
+        // Adiciona todos os campos do formData, exceto 'fotos'
+        const formPayload = new FormData();
+        Object.keys(formData).forEach((key) => {                
+            if (key !== 'fotos') {
+            formPayload.append(key, formData[key]);
+            }
         });
 
-        // Loga o conteúdo do FormData no console
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-        }        
+        // Adiciona os selects
+        formPayload.append('tipo', tipo);
+        formPayload.append('finalidade', finalidade);
+
+        // Sempre envia as fotos antigas, mesmo que não haja novos arquivos
+        formPayload.append('oldPhotos', JSON.stringify(currentPhotos));
+
+        // Se houver novos arquivos, adiciona-os
+        if (inputFotos.current && inputFotos.current.files.length > 0) {
+            Array.from(inputFotos.current.files).forEach((file) => {
+            formPayload.append('fotos', file);
+            });
+        }  
 
         try {
-            await api.put(`/imoveis/${id}`, formData);
+            await api.put(`/imoveis/${id}`, formPayload, {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            console.log('Dentro do try:', currentPhotos)
             setConfirmationMessage('Imóvel atualizado com sucesso!');
             setTimeout(() => setConfirmationMessage(''), 5000);
         } catch (error) {
             console.error('Erro ao atualizar imóvel:', error);
             setConfirmationMessage('Erro ao atualizar imóvel.');
             setTimeout(() => setConfirmationMessage(''), 5000);
-        }
-
-            /*try {
-                const response = await api.put(`/imoveis/${id}`, updatedImovel);
-                console.log('Response:', response.data); // Log the response from the backend
-                setConfirmationMessage('Imóvel atualizado com sucesso!');
-            } catch (error) {
-                console.error('Error updating imovel:', error);
-                setError('Erro ao atualizar imóvel.');
-            }*/
-
-        console.log('Dados enviados:', formData);
+        }             
     }
 
-    function handleDeleteImage(image) {
-        setExistingImages(existingImages.filter(img => img !== image));
+    function handleDeleteImage(image) {        
+        setCurrentPhotos(currentPhotos.filter(img => img !== image));
+        console.log('Fotos atualizadas', currentPhotos)
     }
+
+    const updateFormData = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    if (loading) return <div>Carregando...</div>;
+    if (error) return <div>Erro ao carregar imóvel: {error.message}</div>;
+    if (!imovelData || !imovelData.tipo || !imovelData.finalidade) return <div>Imóvel não encontrado</div>;
    
   return (
     <div id="main">
@@ -181,25 +142,25 @@ function EditarImovel() {
             <form>                
                 <div className="form-item">
                     <label htmlFor="titulo">Título</label>
-                    <input type="text" name="titulo" className="titulo" ref={inputTitulo} />
+                    <input type="text" name="titulo" className="titulo" value={formData.titulo} onChange={updateFormData} />                    
                 </div>                             
                 <div className="form-item">
                     <label htmlFor="subtitulo">Subtítulo</label>
-                    <input type="text" name="subTitulo" className="subTitulo" ref={inputSubTitulo} />
+                    <input type="text" name="subTitulo" className="subTitulo" value={formData.subTitulo} onChange={updateFormData} />
                 </div>
 
                 <div className="form-item">
                     <label htmlFor="subtitulo">Descrição curta</label>
-                    <input type="text" name="descricaoCurta" className="descricaoCurta" ref={inputDescricaoCurta} />            
+                    <input type="text" name="descricaoCurta" className="descricaoCurta" value={formData.descricaoCurta} onChange={updateFormData} />            
                 </div>
                 <div className="form-item">   
                     <label htmlFor="subtitulo">Descrição longa</label>             
-                    <textarea name="descricaoLonga" className="descricaoLonga" ref={inputDescricaoLonga}></textarea>
+                    <textarea name="descricaoLonga" className="descricaoLonga" value={formData.descricaoLonga} onChange={updateFormData}></textarea>
                 </div>               
                 <div className="form-item">
                     <label htmlFor="subtitulo">Fotos</label>
                     <div className="existing-images">
-                            {existingImages.map((image, index) => (
+                            {currentPhotos.map((image, index) => (
                                 <div key={index} className="image-item">
                                     <img src={`http://localhost:3000/uploads/${image}`} alt={`Imagem ${index + 1}`} />
                                     <button type="button" onClick={() => handleDeleteImage(image)}>Excluir</button>
@@ -210,12 +171,11 @@ function EditarImovel() {
                 </div>
                   
                 
-                <div className="row">
-                    
+                <div className="row">                    
                         
                         <div className="form-item">
                             <label htmlFor="subtitulo">Código de referência</label>
-                            <input type="text" name="codigo" className="codigo" ref={inputCodigo} />
+                            <input type="text" name="codigo" className="codigo" value={formData.codigo} onChange={updateFormData} />
                         </div>
                         <div className="form-item">
                             <label htmlFor="tipo">Tipo de imóvel</label>
@@ -226,16 +186,16 @@ function EditarImovel() {
                             <ListaCategorias endpoint="finalidade" selectedId={finalidade} onChange={setFinalidade} />
                         </div>
                         <div className="form-item">
-                            <label htmlFor="subtitulo">Valor</label>
-                            <input type="text" name="valor" className="valor" ref={inputValor} />
+                            <label htmlFor="valor">Valor</label>
+                            <input type="text" name="valor" className="valor" value={formData.valor} onChange={updateFormData} />
                         </div>
                         <div className="form-item">
-                            <label htmlFor="subtitulo">Endereço</label>
-                            <input type="text" name="endereco" className="endereco" ref={inputEndereco} />
+                            <label htmlFor="endereco">Endereço</label>
+                            <input type="text" name="endereco" className="endereco" value={formData.endereco} onChange={updateFormData} />
                         </div>
                         <div className="form-item">
-                            <label htmlFor="subtitulo">Cidade</label>
-                            <input type="text" name="cidade" className="cidade" ref={inputCidade} />
+                            <label htmlFor="cidade">Cidade</label>
+                            <input type="text" name="cidade" className="cidade" value={formData.cidade} onChange={updateFormData} />
                         </div>      
                     
                 </div>{/*row*/}

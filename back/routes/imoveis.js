@@ -218,12 +218,20 @@ router.put('/imoveis/:id', upload.array('fotos'), async (req, res) => {
             finalidade,
             valor,
             endereco,
-            cidade
+            cidade,
+            oldPhotos
         } = req.body;
 
         console.log('req.body:', req.body);
 
-        const fotos = req.files ? req.files.map(file => file.filename) : [];
+        let fotos = [];
+        if (oldPhotos) {
+            fotos = JSON.parse(oldPhotos); // Converte string JSON para array
+        }
+        if (req.files && req.files.length > 0) {
+            const novasFotos = req.files.map(file => file.filename);
+            fotos = [...fotos, ...novasFotos]; // Mescla arrays
+        }
 
         const data = {
             titulo,
@@ -237,55 +245,39 @@ router.put('/imoveis/:id', upload.array('fotos'), async (req, res) => {
             fotos
         };
 
-        if (tipo) {
-            const tipoExists = await prisma.tipo.findMany({
-                where: {
-                    id: {
-                        in: Array.isArray(tipo) ? tipo : [tipo]
-                    }
-                }
-            });
-
-            if (tipoExists.length !== (Array.isArray(tipo) ? tipo.length : 1)) {
-                return res.status(400).json({ error: 'Tipo inválido' });
-            }
-
-            data.tipo = {
-                connect: Array.isArray(tipo) ? tipo.map(tipoId => ({ id: tipoId })) : [{ id: tipo }]
-            };
-        }
-
-        if (finalidade) {
-            const finalidadeExists = await prisma.finalidade.findMany({
-                where: {
-                    id: {
-                        in: Array.isArray(finalidade) ? finalidade : [finalidade]
-                    }
-                }
-            });
-
-            if (finalidadeExists.length !== (Array.isArray(finalidade) ? finalidade.length : 1)) {
-                return res.status(400).json({ error: 'Finalidade inválida' });
-            }
-
-            data.finalidade = {
-                connect: Array.isArray(finalidade) ? finalidade.map(finalidadeId => ({ id: finalidadeId })) : [{ id: finalidade }]
-            };
-        }
-
         console.log('data:', data);
 
         const response = await prisma.imovel.update({
             where: { id },
-            data,
+            data: data,
             include: {
                 tipo: true,
                 finalidade: true
             }
         });
+
+        await prisma.imovelTipo.deleteMany({
+            where: { imovelId: id }
+          });
+          await prisma.imovelTipo.create({
+            data: {
+              imovelId: id,
+              tipoId: tipo
+            }
+        });
+
+        await prisma.imovelFinalidade.deleteMany({
+            where: { imovelId: id }
+          });
+          await prisma.imovelFinalidade.create({
+            data: {
+              imovelId: id,
+              finalidadeId: finalidade
+            }
+        });
         
         console.log('Imóvel atualizado:', response);
-        res.status(200).json(req.body);
+        res.status(200).json(response);
     }catch (error){
         console.error('Erro ao atualizar imóvel:', error);
         res.status(500).json({ error: 'Erro ao atualizar imóvel' });

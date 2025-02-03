@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from '../../services/api';
 import './style.css';
 
-const FormCategorias = ( {endpoint, selectedId, onChange} ) => {
+const ListaCategorias = ( {endpoint, selectedId, onChange} ) => {
 
     const [categorias, setCategorias] = useState([]);
     const [selectedValue, setSelectedValue] = useState(selectedId);
@@ -24,6 +24,7 @@ const FormCategorias = ( {endpoint, selectedId, onChange} ) => {
         setSelectedValue(e.target.value);
         if (onChange) {
             onChange(e.target.value);
+            console.log('Valor:', e.target.value)
         }
     };
     
@@ -43,4 +44,4 @@ return(
 }
 
 
-export default FormCategorias
+export default ListaCategorias
