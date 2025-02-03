@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from '../../services/api';
 import './style.css';
 
-const ListaCategorias = ( {endpoint, selectedId} ) => {
+const FormCategorias = ( {endpoint, selectedId, onChange} ) => {
 
     const [categorias, setCategorias] = useState([]);
     const [selectedValue, setSelectedValue] = useState(selectedId);
@@ -19,11 +19,18 @@ const ListaCategorias = ( {endpoint, selectedId} ) => {
     useEffect(() => {
         setSelectedValue(selectedId);
     }, [selectedId]);   
+
+    const handleChange = (e) => {
+        setSelectedValue(e.target.value);
+        if (onChange) {
+            onChange(e.target.value);
+        }
+    };
     
     
 return(
     <>    
-        <select value={selectedValue} onChange={(e) => setSelectedValue(e.target.value)}>
+        <select value={selectedValue} onChange={handleChange}>
             <option value="">- Selecione uma opção -</option>
             {categorias.map((categoria) => (
                 <option value={categoria.id} key={categoria.id}>{categoria.nome}</option>
@@ -36,4 +43,4 @@ return(
 }
 
 
-export default ListaCategorias
+export default FormCategorias

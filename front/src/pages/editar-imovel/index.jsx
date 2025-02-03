@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import FormCategorias from '../../components/form-categorias';
+import ListaCategorias from '../../components/form-categorias';
 import api from '../../services/api';
 import './style.css';
 
@@ -11,8 +11,8 @@ function EditarImovel() {
     const [imovelData, setImovel] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [tipos, setTipos] = useState([]);
-    const [finalidades, setFinalidades] = useState([]);
+    const [tipo, setTipo] = useState('');
+    const [finalidade, setFinalidade] = useState('');
     const [existingImages, setExistingImages] = useState([]);
 
     const inputTitulo = useRef(null);
@@ -35,15 +35,16 @@ function EditarImovel() {
                 const response = await api.get(`/imoveis/id/${id}`);
                 setImovel(response.data);
                 setExistingImages(response.data.fotos || []);
+                setTipo(response.data.tipo[0]?.tipo.id);
+                setFinalidade(response.data.finalidade[0]?.finalidade.id);
+                setLoading(false);
             } catch (error) {
-                console.error('Erro ao buscar imóvel:', error);
-                setError('Erro ao carregar dados do imóvel');
-            } finally {
+                setError('Erro ao buscar imóvel:', error);
                 setLoading(false);
             }
         }                
         fetchImovel();
-    }, []);
+    }, [id]);
 
     useEffect(() => {
         console.log(imovelData);
@@ -56,8 +57,8 @@ function EditarImovel() {
                     api.get('/tipo'),
                     api.get('/finalidade')
                 ]);
-                setTipos(tiposResponse.data);
-                setFinalidades(finalidadesResponse.data);
+                setTipo(tiposResponse.data);
+                setFinalidade(finalidadesResponse.data);
             } catch (error) {
                 console.error('Erro ao buscar categorias:', error);
                 setError('Erro ao carregar categorias');
@@ -90,6 +91,16 @@ function EditarImovel() {
 
         event.preventDefault();
 
+        /*const updatedImovel = {
+            codigo: inputCodigo.current.value,
+            valor: inputValor.current.value,
+            endereco: inputEndereco.current.value,
+            tipo,
+            finalidade
+        };*/
+
+        //console.log('Updated Imovel:', updatedImovel); // Log the updated data
+
         // Verificar se todos os campos obrigatórios estão preenchidos
         /*if (!inputTitulo.current?.value || 
             !inputCodigo.current?.value ||             
@@ -108,11 +119,14 @@ function EditarImovel() {
             formData.append('subTitulo', inputSubTitulo.current?.value || '');
             formData.append('descricaoCurta', inputDescricaoCurta.current?.value || '');
             formData.append('descricaoLonga', inputDescricaoLonga.current?.value || '');
-            formData.append('tipo', inputTipo.current?.value || '');
-            formData.append('finalidade', inputFinalidade.current?.value || '');
+            /*formData.append('tipo', inputTipo.current?.value || '');
+            formData.append('finalidade', inputFinalidade.current?.value || '');*/
             formData.append('valor', inputValor.current?.value || '');
             formData.append('endereco', inputEndereco.current?.value || '');
             formData.append('cidade', inputCidade.current?.value || '');
+            formData.append('tipo', tipo);
+            formData.append('finalidade', finalidade);
+
         
         // Adiciona múltiplas fotos ao FormData
         if (inputFotos.current && inputFotos.current.files) {
@@ -140,6 +154,15 @@ function EditarImovel() {
             setConfirmationMessage('Erro ao atualizar imóvel.');
             setTimeout(() => setConfirmationMessage(''), 5000);
         }
+
+            /*try {
+                const response = await api.put(`/imoveis/${id}`, updatedImovel);
+                console.log('Response:', response.data); // Log the response from the backend
+                setConfirmationMessage('Imóvel atualizado com sucesso!');
+            } catch (error) {
+                console.error('Error updating imovel:', error);
+                setError('Erro ao atualizar imóvel.');
+            }*/
 
         console.log('Dados enviados:', formData);
     }
@@ -195,12 +218,12 @@ function EditarImovel() {
                             <input type="text" name="codigo" className="codigo" ref={inputCodigo} />
                         </div>
                         <div className="form-item">
-                            <label htmlFor="tipo">Tipo de imóvel</label>                            
-                            <FormCategorias endpoint="tipo" selectedId={imovelData?.tipo[0]?.tipo.id || ''} />
+                            <label htmlFor="tipo">Tipo de imóvel</label>
+                            <ListaCategorias endpoint="tipo" selectedId={tipo} onChange={setTipo} />
                         </div>
                         <div className="form-item">
-                            <label htmlFor="finalidade">Finalidade</label>                            
-                            <FormCategorias endpoint="finalidade" selectedId={imovelData?.finalidade[0]?.finalidade.id || ''} />
+                            <label htmlFor="finalidade">Finalidade</label>
+                            <ListaCategorias endpoint="finalidade" selectedId={finalidade} onChange={setFinalidade} />
                         </div>
                         <div className="form-item">
                             <label htmlFor="subtitulo">Valor</label>

@@ -221,6 +221,8 @@ router.put('/imoveis/:id', upload.array('fotos'), async (req, res) => {
             cidade
         } = req.body;
 
+        console.log('req.body:', req.body);
+
         const fotos = req.files ? req.files.map(file => file.filename) : [];
 
         const data = {
@@ -236,16 +238,42 @@ router.put('/imoveis/:id', upload.array('fotos'), async (req, res) => {
         };
 
         if (tipo) {
+            const tipoExists = await prisma.tipo.findMany({
+                where: {
+                    id: {
+                        in: Array.isArray(tipo) ? tipo : [tipo]
+                    }
+                }
+            });
+
+            if (tipoExists.length !== (Array.isArray(tipo) ? tipo.length : 1)) {
+                return res.status(400).json({ error: 'Tipo inválido' });
+            }
+
             data.tipo = {
-                connect: tipo.map(tipoId => ({ id: tipoId }))
+                connect: Array.isArray(tipo) ? tipo.map(tipoId => ({ id: tipoId })) : [{ id: tipo }]
             };
         }
 
         if (finalidade) {
+            const finalidadeExists = await prisma.finalidade.findMany({
+                where: {
+                    id: {
+                        in: Array.isArray(finalidade) ? finalidade : [finalidade]
+                    }
+                }
+            });
+
+            if (finalidadeExists.length !== (Array.isArray(finalidade) ? finalidade.length : 1)) {
+                return res.status(400).json({ error: 'Finalidade inválida' });
+            }
+
             data.finalidade = {
-                connect: finalidade.map(finalidadeId => ({ id: finalidadeId }))
+                connect: Array.isArray(finalidade) ? finalidade.map(finalidadeId => ({ id: finalidadeId })) : [{ id: finalidade }]
             };
         }
+
+        console.log('data:', data);
 
         const response = await prisma.imovel.update({
             where: { id },
