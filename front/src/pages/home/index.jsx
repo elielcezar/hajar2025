@@ -22,6 +22,7 @@ function Home() {
   return (
     <>
       <EmblaCarousel />      
+      
       <div className="container">  
         <div id="imoveis">
               {imoveis.map((imovel) => (

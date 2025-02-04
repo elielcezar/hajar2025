@@ -1,41 +1,49 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import { AuthProvider } from './context/AuthContext';
-import Header from './components/header/header';
+
+import Header from './components/header';
+
 import Login from './pages/login';
 import Home from './pages/home';
 import About from './pages/about';
 import NotFound from './pages/notfound';
-import ProtectedRoute from './components/protected-route';
 import Contact from './pages/contact';
-import Imovel from './pages/imovel';
-import Imoveis from './pages/imoveis';
+
+import ExibirImovel from './pages/imoveis/exibir';
+import ListarImoveis from './pages/imoveis/listar';
+import CadastrarImovel from './pages/imoveis/cadastrar';
+import EditarImovel from './pages/imoveis/editar';
+
 import Usuarios from './pages/usuarios';
 import Usuario from './pages/usuario';
 import CadastroUsuario from './pages/cadastro-usuario';
-import CadastroImovel from './pages/cadastro-imovel';
-import EditarImovel from './pages/editar-imovel';
-import CadastroCategoria from './pages/cadastro-categoria';
+
 import Footer from './components/footer';
 
-function App() {   
+import ProtectedRoute from './components/protected-route';
+
+function App() {     
         
     return (
         <AuthProvider>
             <Router>
-                <Header />
+                <Header />                
+                
                 <Routes>
                     <Route path="/" element={<Home />}/>
-                    <Route path="login" element={<Login />} />
+                    <Route path="login" element={<Login />} />                    
+                    
+                    <Route path="imoveis" element={<ListarImoveis />} />                    
+                    <Route path="imoveis/:codigo" element={<ExibirImovel />} />
+                    <Route path="imoveis/edit/:id" element={<ProtectedRoute element={EditarImovel} />} />
+                    <Route path="cadastro-imovel" element={<ProtectedRoute element={CadastrarImovel} />} />
+                    
                     <Route path="usuarios" element={<ProtectedRoute element={Usuarios} />} />
                     <Route path="usuarios/*" element={<ProtectedRoute element={Usuarios} />} />
                     <Route path="usuarios/:id" element={<ProtectedRoute element={Usuario} />} />
-                    <Route path="imoveis" element={<Imoveis />} />                    
-                    <Route path="imoveis/:codigo" element={<Imovel />} />
-                    <Route path="imoveis/edit/:id" element={<ProtectedRoute element={EditarImovel} />} />
                     <Route path="cadastro-usuario" element={<CadastroUsuario />} />
-                    <Route path="cadastro-imovel" element={<CadastroImovel />} />
-                    <Route path="cadastro-categoria" element={<CadastroCategoria />} />
+                    
                     <Route path="about" element={<About />} />
                     <Route path="contact" element={<Contact />} />                    
                     <Route path="*" element={<NotFound />} />                    

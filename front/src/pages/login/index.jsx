@@ -4,12 +4,12 @@ import { AuthContext } from '../../context/AuthContext';
 import api from '../../services/api'
 import './style.css'
 
-function Login() { 
+export const Login = () => { 
     
     const [confirmationMessage, setConfirmationMessage] = useState('');    
-    const inputEmail = useRef();
-    const inputPassword = useRef();
-    const navigate = useNavigate();
+    const inputEmail = useRef(null);
+    const inputPassword = useRef(null);
+    const navigate = useNavigate(null);
     const { login } = useContext(AuthContext);
 
     async function handleLogin(){
@@ -61,4 +61,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Login;

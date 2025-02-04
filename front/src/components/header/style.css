@@ -1,41 +1,76 @@
-.header {
+header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
+    flex-direction: column;
+    align-items: center;    
     background-color: #333;
-    color: #fff;    
+    color: #fff;  
+
+    & nav{
+        & ul{
+            display: flex;
+            align-items: center;
+            gap: 25px;
+    
+            & li{
+                & a{
+                    color: #fff;
+                    text-decoration: none;
+                    font-size: 18px;
+    
+                    &:hover{
+                        color: #ff4b5c;
+                    }
+                }
+            }
+        }
+    }
+    
+    & .main-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;        
+        padding: 10px 20px;
+        width: 100%;
+
+        & .logo{
+            & a{
+                color: #fff;
+                text-decoration: none;
+                font-size: 24px;
+                font-weight: bold;  
+                background-color: #ff1f3a;            
+                display: inline-block;
+                padding: 12px;
+            }
+        }        
+
+        & .logout-button {
+            background-color: #ff4b5c;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            max-width: 120px;
+            margin-left: 20px;
+        
+            &:hover {
+                background-color: #ff1f3a;
+            }
+        }
+        
+    }
+    & .admin-header {
+        display: flex;
+        align-items: center;
+        justify-content: end;        
+        padding: 10px 20px;
+        width: 100%;
+        background: #000;
+        
+        & ul li a{
+            font-size: 16px;                        
+        }
+    }
 }
 
-.logo a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.nav ul {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-}
-
-.nav ul li a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 18px;
-}
-
-.logout-button {
-    background-color: #ff4b5c;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-    max-width: 120px;
-}
-
-.logout-button:hover {
-    background-color: #ff1f3a;
-}
