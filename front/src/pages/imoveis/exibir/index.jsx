@@ -15,7 +15,8 @@ function Imovel() {
   async function getImovelData() { 
     try{
       const imovelFromApi = await api.get(`/imoveis/${params.codigo}`);
-      setImovelData(imovelFromApi.data[0]);       
+      setImovelData(imovelFromApi.data[0]);     
+      console.log('API Response:', imovelFromApi.data); // Debug full response  
     }catch{
       console.error('Erro ao buscar imóvel:', error);
     }        
@@ -26,7 +27,9 @@ function Imovel() {
   }, []);
 
   useEffect(() => {  
-    console.log(imovelData);
+    /*console.log('Full imovelData:', imovelData); // Debug full state object
+  console.log('Finalidade:', imovelData?.finalidade);
+  console.log('Tipo:', imovelData?.tipo);*/
   }, [imovelData]);
 
   return (
@@ -35,11 +38,30 @@ function Imovel() {
       <div className="page-title">
         <h1>{imovelData?.titulo}</h1>
       </div>
-      <div className="container">              
+      <div className="container">    
+        <div className="row">
+          <p><a href={`http://localhost:5173/imoveis/edit/${imovelData.id}`}>Ediatr</a></p>
+        </div>          
         <div className="row meta">
           <h1>{imovelData.titulo}</h1>
-          <p><strong>Código:</strong> {imovelData.codigo}</p>        
-          <p>{imovelData.descricaoCurta}</p>
+          <div className="itens">
+            <div className="item">
+              <p><strong>Código:</strong></p>        
+              <p>{imovelData.codigo}</p>
+            </div>
+            <div className="item">
+              <p><strong>Tipo:</strong></p>        
+              <p>{imovelData.tipo ? imovelData.tipo[0].tipo.nome : null}</p>
+            </div>
+            <div className="item">
+              <p><strong>Finalidade:</strong></p>        
+              <p>{imovelData.finalidade ? imovelData.finalidade[0].finalidade.nome : null}</p>
+            </div>
+            <div className="item">
+              <p><strong>Valor:</strong></p>        
+              <p>{imovelData.valor}</p>
+            </div>
+          </div>
         </div>
 
         <div className="carrossel">

@@ -23,12 +23,15 @@
         h1{
             margin: 0;
             padding: ;
-        }  
+        }          
         
-        p{
-            margin: 25px 0 0 0;
-            padding: 25px 0 0 0;
+        .itens{
+            display: flex;
+            width: 100%;
+            padding: 15px 0;
             border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            justify-content: space-around;
         }
     }
 

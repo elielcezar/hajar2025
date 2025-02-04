@@ -184,7 +184,19 @@ router.get('/imoveis/:codigo', async (req, res) => {
         const imovel = await prisma.imovel.findMany({
             where: {
                 codigo: codigo
-            }
+            },
+            include: {
+                tipo: {
+                  include: {
+                    tipo: true
+                  }
+                },
+                finalidade: {
+                  include: {
+                    finalidade: true
+                  }
+                }
+              }
         });
         if(!imovel){
             return res.status(404).json({
