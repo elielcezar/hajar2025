@@ -1,12 +1,12 @@
-#imoveis{
+.imoveis{
     display: flex;
     flex-wrap: wrap;
-
-    & .item{        
+    
+    .item{        
         width: 33.3%;
         padding: 1.5%;
 
-        & .card{
+        .card{
             background: #fff;
             padding: 10px;
             box-shadow: 0 3px 3px rgba(0,0,0,.1);

@@ -15,8 +15,7 @@ function Imovel() {
   async function getImovelData() { 
     try{
       const imovelFromApi = await api.get(`/imoveis/${params.codigo}`);
-      setImovelData(imovelFromApi.data[0]);     
-      console.log('API Response:', imovelFromApi.data); // Debug full response  
+      setImovelData(imovelFromApi.data[0]);           
     }catch{
       console.error('Erro ao buscar imóvel:', error);
     }        
@@ -26,12 +25,6 @@ function Imovel() {
     getImovelData();
   }, []);
 
-  useEffect(() => {  
-    /*console.log('Full imovelData:', imovelData); // Debug full state object
-  console.log('Finalidade:', imovelData?.finalidade);
-  console.log('Tipo:', imovelData?.tipo);*/
-  }, [imovelData]);
-
   return (
     <div id="main">
       
@@ -39,27 +32,24 @@ function Imovel() {
         <h1>{imovelData?.titulo}</h1>
       </div>
       <div className="container">    
-        <div className="row">
-          <p><a href={`http://localhost:5173/imoveis/edit/${imovelData.id}`}>Ediatr</a></p>
+        <div className="row tabs">
+          <p><a href={`http://localhost:5173/imoveis/edit/${imovelData.id}`} className="tab">Editar</a></p>
         </div>          
         <div className="row meta">
           <h1>{imovelData.titulo}</h1>
           <div className="itens">
             <div className="item">
-              <p><strong>Código:</strong></p>        
-              <p>{imovelData.codigo}</p>
+              <p><strong>Código:</strong> {imovelData.codigo}</p>        
+            
             </div>
             <div className="item">
-              <p><strong>Tipo:</strong></p>        
-              <p>{imovelData.tipo ? imovelData.tipo[0].tipo.nome : null}</p>
+              <p><strong>Tipo:</strong> {imovelData?.tipo?.[0]?.tipo?.nome || 'Não informado'} </p>                     
             </div>
             <div className="item">
-              <p><strong>Finalidade:</strong></p>        
-              <p>{imovelData.finalidade ? imovelData.finalidade[0].finalidade.nome : null}</p>
+              <p><strong>Finalidade:</strong> {imovelData?.finalidade?.[0]?.finalidade?.nome || 'Não informado'}</p>
             </div>
             <div className="item">
-              <p><strong>Valor:</strong></p>        
-              <p>{imovelData.valor}</p>
+              <p><strong>Valor:</strong> {imovelData.valor}</p>                    
             </div>
           </div>
         </div>

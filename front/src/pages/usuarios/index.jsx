@@ -24,20 +24,20 @@ export const Usuarios = () => {
   
   return (
     <>
-      <div className="container">  
-
-        <div className='listaUsuarios'>
-            {users.map((user) => (                
-                <div className="item" key={user.id}>
-                    <p><a href={`${baseUrl}${user.id}`}>{user.name}</a></p>
-                    <p>Email: {user.email}</p>
-
-                    <button onClick={() => deleteUser(user.id)}>Excluir</button>
-                </div>                
-            ))}
-        </div>
-        
-      </div>      
+      <div id="main">
+        <div className="container"> 
+          <h1>Usuários</h1> 
+          <div className='listaUsuarios'>
+              {users.map((user) => (                
+                  <div className="item" key={user.id}>
+                      <p><a href={`${baseUrl}${user.id}`}>{user.name}</a></p>
+                      <p>Email: {user.email}</p>
+                      <button onClick={() => deleteUser(user.id)}>Excluir</button>
+                  </div>                
+              ))}
+          </div>
+        </div>     
+      </div> 
     </>
   )
 }

@@ -1,9 +1,8 @@
 
-.embla {    
+.carrossel {    
   width: 100%;    
   overflow: hidden;    
-  height: 70vh;   
-  border: 1px solid red; 
+  height: 70vh;     
 }
 img{
   width: 100%;

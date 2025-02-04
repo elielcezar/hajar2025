@@ -24,6 +24,20 @@ import Footer from './components/footer';
 import ProtectedRoute from './components/protected-route';
 
 function App() {     
+
+    const usePageClass = () => {
+        const location = useLocation();
+        useEffect(() => {
+          // Remover classes anteriores (opcional)
+          document.body.className = '';
+          // Adicionar a classe correspondente à rota atual
+          if (location.pathname === '/') {
+            document.body.classList.add('page-home');
+          } else if (location.pathname === '/about') {
+            document.body.classList.add('page-about');
+          }
+        }, [location]);
+      };
         
     return (
         <AuthProvider>

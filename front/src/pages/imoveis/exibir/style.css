@@ -32,6 +32,11 @@
             border-top: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
             justify-content: space-around;
+            
+            & strong{
+                margin-right: 10px;
+            }
+            
         }
     }
 
@@ -41,6 +46,7 @@
                 & .embla__slide{
                     background-size: cover;
                     background-position: center;
+                    height: 70vh;
                 }
             }
         }
